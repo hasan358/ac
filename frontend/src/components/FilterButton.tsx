@@ -13,18 +13,24 @@ interface FilterButtonProps {
 const FilterButton: React.FC<FilterButtonProps> = ({
   onClick,
   className = "",
-  iconSize = 18,
+  iconSize = 22,
   isActive = false,
   onKeyDown,
-  icon = <Filter size={iconSize} aria-hidden="true" />,
+  icon = (
+    <Filter
+      size={iconSize}
+      className="stroke-white"
+      aria-hidden="true"
+    />
+  ),
 }) => {
   return (
     <button
       type="button"
       onClick={onClick}
       onKeyDown={onKeyDown}
-      className={`p-2 rounded-lg border border-gray-300 ${
-        isActive ? "bg-blue-100 border-blue-500" : "bg-white hover:bg-gray-100"
+      className={`p-2 rounded-lg border border-black bg-black ${
+        isActive ? "bg-blue-100 border-blue-500" : "hover:"
       } ${className}`}
       aria-label={isActive ? "Close filters" : "Open filters"}
       aria-pressed={isActive}

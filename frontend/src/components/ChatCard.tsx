@@ -1,57 +1,25 @@
 import React from "react";
 
 interface ChatCardProps {
-  title?: string;
-  description?: string;
+  title: string;
+  description: string;
   logoUrl: string;
-  className?: string;
-  imgClassName?: string;
-  titleClassName?: string;
-  descriptionClassName?: string;
-  fallbackLogoUrl?: string;
-  onClick?: () => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
-const ChatCard: React.FC<ChatCardProps> = ({
-  title = "Untitled",
-  description = "No description available",
-  logoUrl,
-  className = "",
-  imgClassName = "",
-  titleClassName = "",
-  descriptionClassName = "",
-  fallbackLogoUrl = "/default-logo.png",
-  onClick,
-  onKeyDown,
-}) => {
+const ChatCard: React.FC<ChatCardProps> = ({ title, description, logoUrl }) => {
   return (
-    <div
-      className={`bg-white p-4 rounded-xl shadow-sm hover:shadow-md border border-gray-200 ${onClick ? "cursor-pointer" : ""} ${className}`}
-      role={onClick ? "button" : "article"}
-      tabIndex={onClick ? 0 : undefined}
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-      aria-label={onClick ? `Open chat ${title}` : undefined}
-    >
-      <div className="flex items-center gap-3">
+    <div className="bg-white shadow-sm hover:shadow-md w-[455px] h-[125px]">
+      <div className="flex items-center gap-5 px-5 py-9">
         <img
           src={logoUrl}
-          alt={`Logo for ${title}`}
-          className={`w-10 h-10 rounded-full ${imgClassName}`}
-          onError={(e) => (e.currentTarget.src = fallbackLogoUrl)}
+          alt={title}
+          className="w-12 h-12 rounded-full border border-gray-300 object-cover"
         />
-        <div>
-          <h3 className={`text-md font-semibold ${titleClassName}`}>
-            {title}
-          </h3>
-          <p className={`text-sm text-gray-500 line-clamp-2 ${descriptionClassName}`}>
-            {description}
-          </p>
-        </div>
+        <h3 className="text-lg font-bold text-gray-800">{title}</h3>
       </div>
+      {false && <p className="text-sm text-gray-500">{description}</p>}
     </div>
   );
 };
 
-export default React.memo(ChatCard);
+export default ChatCard;

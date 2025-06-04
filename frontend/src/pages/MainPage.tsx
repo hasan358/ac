@@ -1,14 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-// стало
 import SearchBar from '../components/SearchBar';
 import FilterButton from '../components/FilterButton';
 import ChatCard from '../components/ChatCard';
 import AvatarOrSignIn from '../components/AvatarOrSignIn';
 
-// Define interfaces for type safety
 interface Chat {
   id: string;
   title: string;
@@ -16,37 +13,58 @@ interface Chat {
   logoUrl: string;
 }
 
-interface MainPageProps {
-  // Add props if needed for extensibility
-}
+interface MainPageProps {}
 
-// Use constants for static data
+
 const POPULAR_CHATS: Chat[] = [
   {
-    id: 'gpt-assistant',
-    title: 'GPT Assistant',
-    description: 'Your friendly everyday AI',
+    id: 'gpt',
+    title: 'ChatGPT',
+    description: 'Your friendly everyday AI for quick tasks and help.',
     logoUrl: '/ai-logo-placeholder.png',
   },
   {
-    id: 'code-helper',
-    title: 'Code Helper',
-    description: 'Get coding help instantly',
+    id: 'vison',
+    title: 'Cloud Vison',
+    description: 'Get instant coding assistance from AI.',
     logoUrl: '/ai-logo-placeholder.png',
   },
   {
-    id: 'travel-buddy',
-    title: 'Travel Buddy',
-    description: 'AI-powered travel tips',
+    id: 'hug-face',
+    title: 'Huging Face',
+    description: 'Discover places and get travel tips powered by AI.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+    {
+    id: 'replicate',
+    title: 'Replicate',
+    description: 'Your friendly everyday AI for quick tasks and help.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+  {
+    id: 'stability-ai',
+    title: 'Stability AI',
+    description: 'Get instant coding assistance from AI.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+  {
+    id: 'ex',
+    title: 'Example',
+    description: 'Discover places and get travel tips powered by AI.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+    {
+    id: 'paid-ex',
+    title: 'Paid Example',
+    description: 'Your friendly everyday AI for quick tasks and help.',
     logoUrl: '/ai-logo-placeholder.png',
   },
 ];
 
 const MainPage: React.FC<MainPageProps> = () => {
   const [search, setSearch] = useState<string>('');
-  const isSignedIn = false; // Replace with useAuth() hook in production
+  const isSignedIn = false;
 
-  // Memoize filtered chats to prevent unnecessary re-renders
   const filteredChats = useMemo(() => {
     if (!search.trim()) return POPULAR_CHATS;
     const searchLower = search.toLowerCase();
@@ -57,72 +75,60 @@ const MainPage: React.FC<MainPageProps> = () => {
     );
   }, [search]);
 
-  // Handle filter button click with proper event type
   const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // Implement filter logic or open filter menu
     console.log('Filter button clicked', event);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 flex flex-col gap-8">
-      {/* Top Navigation */}
-      <header className="flex justify-between items-center">
-        {/* Left: Search and Filter */}
-        <div className="flex items-center gap-2 w-full sm:w-1/2">
-          <SearchBar
-            value={search}
-            onChange={setSearch}
-            placeholder="Search AI Chats..."
-            aria-label="Search AI chats"
-          />
-        <FilterButton onClick={(e) => handleFilterClick(e)} />
-        </div>
-
-        {/* Right: Home + Avatar or Sign In */}
-        <nav className="flex items-center gap-4">
-          <Link
-            to="/about"
-            className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
-            aria-label="Go to about page"
-          >
-            <Home size={20} />
-          </Link>
-          <AvatarOrSignIn isSignedIn={isSignedIn} />
-        </nav>
-      </header>
-
-      {/* Create Chat Link */}
-      <section>
-        <Link
-          to="/create"
-          className="text-blue-600 text-lg font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500"
-          aria-label="Create a new chat"
-        >
+    <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
+          {/* Topbar */}
+          <header className="flex justify-between items-center px-4 py-2">
+            <div className="flex items-center gap-2 w-full">
+              <SearchBar
+                value={search}
+                onChange={setSearch}
+                aria-label="Search AI chats"
+              />
+              <Link to="/filter" aria-label="Go to filter page">
+                <FilterButton onClick={() => {handleFilterClick}} />
+              </Link>
+            </div>
+            <nav className="flex items-center gap-5">
+              <AvatarOrSignIn isSignedIn={isSignedIn} />
+              <Link
+                to="/home"
+                className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
+                aria-label="Go to about page"
+              >
+                <Home size={20} className="text-black" />
+              </Link>
+            </nav>
+          </header>
+          <hr className="border border-gray-300 w-full" />
+    
+          {/* Main section */}
+          <section className="relative flex-1 flex">
+            <div className="absolute left-[455px] top-0 bottom-0 w-px bg-gray-300 z-0" />
+            {/* Left panel: chat list */}
+            <div className="flex flex-col gap-0 w-[455px]">
+  {filteredChats.map((chat, idx) => (
+    <React.Fragment key={chat.id}>
+      {idx > 0 && <hr className="border-t border-gray-300 w-full" />}
+      <Link to={`/chat/${chat.id}`}>
+        <ChatCard
+          title={chat.title}
+          description={chat.description}
+          logoUrl={chat.logoUrl}
+        />
+      </Link>
+    </React.Fragment>
+  ))}
+</div>
+      <div className="fixed bottom-100 left-275 -translate-x-1/2">
+        <Link to="/create" className="text-blue-600 text-6xl font-bold hover:underline">
           + Create Chat
         </Link>
-      </section>
-
-      {/* Popular Chats */}
-      <section>
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
-          Popular Chats
-        </h2>
-        {filteredChats.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredChats.map((chat) => (
-              <ChatCard
-                key={chat.id} // Use unique id instead of index
-                title={chat.title}
-                description={chat.description}
-                logoUrl={chat.logoUrl}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-500 text-center">
-            No chats found matching your search.
-          </p>
-        )}
+      </div>
       </section>
     </div>
   );

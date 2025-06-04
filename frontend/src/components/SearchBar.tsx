@@ -17,7 +17,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChange,
   placeholder = "Search...",
-  className = "",
   inputClassName = "",
   iconSize = 18,
   onKeyDown,
@@ -25,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onBlur,
 }) => {
   return (
-    <div className={`relative w-full ${className}`}>
+    <div 	className="relative w-[440px]">
       <label htmlFor="search-input" className="sr-only">
         Search
       </label>
@@ -43,7 +42,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         onFocus={onFocus}
         onBlur={onBlur}
         placeholder={placeholder}
-        className={`w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${inputClassName}`}
+        className={`w-full pl-10 pr-4 py-2 rounded-lg text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 ${inputClassName}`}
         aria-label={placeholder}
       />
     </div>
