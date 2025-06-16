@@ -1,6 +1,12 @@
+import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function SignInPage() {
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    alert('Form submitted!'); // Placeholder for form submission logic
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="bg-white shadow-md rounded-2xl p-8 w-full max-w-md">
@@ -8,7 +14,7 @@ export default function SignInPage() {
           Sign In
         </h2>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -34,18 +40,14 @@ export default function SignInPage() {
           </div>
 
           {/* Submit button */}
-          <Link
-            to="/"
-            className="p-0"
-            aria-label="Back to ac"
+        <Link to={"/"}>
+          <button
+            type="submit"
+            className="w-full px-3 py-2 bg-blue-600 text-white text-base font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <button
-            type="button"
-            className="w-full bg-blue-600 text-white  text-2xl"
-          >
-           Sign In
+            Sign In
           </button>
-          </Link>
+        </Link>
         </form>
       </div>
     </div>

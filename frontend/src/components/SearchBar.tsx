@@ -24,7 +24,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onBlur,
 }) => {
   return (
-    <div 	className="relative w-[440px]">
+    <div 	className="relative w-full">
       <label htmlFor="search-input" className="sr-only">
         Search
       </label>

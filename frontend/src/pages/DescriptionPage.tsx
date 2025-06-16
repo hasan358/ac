@@ -14,6 +14,9 @@ const chatData: Record<string, {
   rating: string;
   comments: string;
   updated: string;
+  id: string;
+  ispaid: boolean;
+  cost: number;
 }> = {
   'gpt': {
     title: 'ChatGPT',
@@ -22,6 +25,9 @@ const chatData: Record<string, {
     rating: '9.5',
     comments: '80k',
     updated: '2 months ago',
+    id: 'gpt',
+    ispaid: false,
+    cost: 0,
   },
   'vison': {
     title: 'Cloud Vison',
@@ -30,6 +36,9 @@ const chatData: Record<string, {
     rating: '9.0',
     comments: '60k',
     updated: '1 week ago',
+    id: 'vison',
+    ispaid: false,
+    cost: 0,
   },
   'hug-face': {
     title: 'Hugging Face',
@@ -38,6 +47,9 @@ const chatData: Record<string, {
     rating: '8.8',
     comments: '15k',
     updated: '5 days ago',
+    id: 'hug-face',
+    ispaid: false,
+    cost: 0,
   },
     'replicate': {
     title: 'Replicate',
@@ -46,6 +58,9 @@ const chatData: Record<string, {
     rating: '9.5',
     comments: '80k',
     updated: '2 months ago',
+    id: 'replicate',
+    ispaid: false,
+    cost: 0,
   },
   'stability-ai': {
     title: 'Stability AI',
@@ -54,6 +69,9 @@ const chatData: Record<string, {
     rating: '9.0',
     comments: '60k',
     updated: '1 week ago',
+    id: 'stability-ai',
+    ispaid: false,
+    cost: 0,
   },
   'ex': {
     title: 'Example',
@@ -62,6 +80,9 @@ const chatData: Record<string, {
     rating: '8.8',
     comments: '15k',
     updated: '5 days ago',
+    id: 'ex',
+    ispaid: false,
+    cost: 0,
   },
   'paid-ex': {
     title: 'Paid Example',
@@ -70,6 +91,9 @@ const chatData: Record<string, {
     rating: '8.8',
     comments: '15k',
     updated: '5 days ago',
+    id: 'paid-ex',
+    ispaid: true,
+    cost: 9.99,
   },
 };
 
@@ -93,7 +117,7 @@ const DescriptionPage: React.FC = () => {
     <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
       {/* Topbar */}
       <header className="flex justify-between items-center px-4 py-2">
-        <div className="flex items-center gap-2 w-full">
+        <div className="flex items-center gap-2 w-[440px]">
           <SearchBar
             value={search}
             onChange={setSearch}
@@ -166,13 +190,27 @@ const DescriptionPage: React.FC = () => {
           </div>
 
           <div className="flex gap-4 mt-4">
-            <button className="px-6 py-2 border border-gray-500 rounded-md text-gray-700 hover:bg-gray-100">
-              Rate
-            </button>
-            <button className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
-              Try
-            </button>
-          </div>
+  <Link
+    to={`/`}
+    className="px-6 py-2 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50"
+  >
+    Back
+  </Link>
+
+  {chat.ispaid ? (
+    <Link to={`/chat/${chat.id}/checkout-page`}>
+    <button className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
+      Buy for ${chat.cost}
+    </button>
+    </Link>
+  ) : (
+  <Link to={`/chat/${chat.id}/menu`}>
+    <button className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
+      Try
+    </button>
+  </Link>
+  )}
+</div>
         </div>
       </section>
     </div>

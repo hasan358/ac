@@ -31,7 +31,7 @@ const POPULAR_CHATS: Chat[] = [
   },
   {
     id: 'hug-face',
-    title: 'Huging Face',
+    title: 'Hugging Face',
     description: 'Discover places and get travel tips powered by AI.',
     logoUrl: '/ai-logo-placeholder.png',
   },
@@ -83,7 +83,7 @@ const MainPage: React.FC<MainPageProps> = () => {
     <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
           {/* Topbar */}
           <header className="flex justify-between items-center px-4 py-2">
-            <div className="flex items-center gap-2 w-full">
+            <div className="flex items-center gap-2 w-[440px]">
               <SearchBar
                 value={search}
                 onChange={setSearch}
@@ -125,7 +125,7 @@ const MainPage: React.FC<MainPageProps> = () => {
   ))}
 </div>
       <div className="fixed bottom-100 left-275 -translate-x-1/2">
-        <Link to="/create" className="text-blue-600 text-6xl font-bold hover:underline">
+        <Link to="/create" className="text-blue-600 text-6xl font-bold hover:">
           + Create Chat
         </Link>
       </div>

@@ -28,7 +28,7 @@ const FilterPage: React.FC = () => {
     <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
       {/* Topbar */}
       <header className="flex justify-between items-center px-4 py-2">
-        <div className="flex items-center gap-2 w-full">
+        <div className="flex items-center gap-2 w-[440px]">
           <SearchBar
             value={search}
             onChange={setSearch}
@@ -58,7 +58,7 @@ const FilterPage: React.FC = () => {
        <div className="relative w-[455px] border-r border-gray-300 z-0">
   {[
     { id: 'gpt', title: 'ChatGPT' },
-    { id: 'vision', title: 'Cloud Vision' },
+    { id: 'vison', title: 'Cloud Vision' },
     { id: 'hug-face', title: 'Hugging Face' },
     { id: 'replicate', title: 'Replicate' },
     { id: 'stability-ai', title: 'Stability AI' },
@@ -187,9 +187,12 @@ const FilterPage: React.FC = () => {
 
   {/* Кнопки */}
   <div className="flex items-center gap-8">
-    <button className="px-6 py-2 rounded-md border border-blue-600 text-blue-600 hover:bg-blue-50">
-      Back
-    </button>
+    <Link
+        to={`/`}
+        className="px-6 py-2 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50"
+      >
+        Back
+      </Link>
     <button className="px-6 py-2 rounded-md bg-green-500 text-white font-semibold hover:bg-green-600">
       Select
     </button>
