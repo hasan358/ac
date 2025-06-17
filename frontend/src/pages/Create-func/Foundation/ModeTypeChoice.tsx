@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function CreateFoundationModeTypeChoice() {
+export default function ModeTypeChoice() {
   const navigate = useNavigate();
 
   const handleSelect = (type: 'fast' | 'advanced') => {
@@ -42,12 +42,11 @@ export default function CreateFoundationModeTypeChoice() {
           <div className="text-left">
             <p className="text-black font-medium">Pros:</p>
             <ul className="text-green-600 text-sm list-disc ml-5">
-              <li>Fast</li>
-              <li>Essay</li>
+              <li>Easier</li>
             </ul>
             <p className="text-black font-medium mt-2">Cons:</p>
             <ul className="text-red-600 text-sm list-disc ml-5">
-              <li>No Full control</li>
+              <li>Less controllable</li>
             </ul>
           </div>
         </div>
@@ -71,11 +70,11 @@ export default function CreateFoundationModeTypeChoice() {
           <div className="text-left">
             <p className="text-black font-medium">Pros:</p>
             <ul className="text-green-600 text-sm list-disc ml-5">
-              <li>Full control</li>
+              <li>More controllable</li>
             </ul>
             <p className="text-black font-medium mt-2">Cons:</p>
             <ul className="text-red-600 text-sm list-disc ml-5">
-              <li>More knowledge about ai</li>
+              <li>Requires more knowledge about ai</li>
             </ul>
           </div>
         </div>

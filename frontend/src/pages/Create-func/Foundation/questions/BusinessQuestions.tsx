@@ -24,7 +24,7 @@ export default function BusinessQuestions() {
   const handleCreate = () => {
     console.log("Entertainment AI Config:", answers);
     // Навигация на следующий шаг (позже можно заменить на реальный маршрут)
-    navigate("/create/foundation/ai-type/entertainment/summary");
+    navigate("/create/interface");
   };
 
   return (

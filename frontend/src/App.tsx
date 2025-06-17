@@ -13,8 +13,10 @@ import ModalChatInterfacePage from './pages/ModalChatInterfacePage';
 import AnswerOfModalChatInterfacePage from './pages/AnswerOfModalChatInterfacePage';
 import PushButtonChatInterfacePage from './pages/PushButtonChatInterfacePage';
 import FoundationTypeChoice from './pages/Create-func/Foundation/FoundationTypeChoice';
-import CreateFoundationModeTypeChoice from './pages/Create-func/Foundation/CreateFoundationModeTypeChoice';
+import InterfaceTypeChoice from './pages/Create-func/Interface/InterfaceTypeChoice';
+import ModeTypeChoice from './pages/Create-func/Foundation/ModeTypeChoice';
 import AddFoundation from './pages/Create-func/Foundation/AddFoundation';
+import AddInterface from './pages/Create-func/Interface/AddInterface';
 import ChooseAIType from './pages/Create-func/Foundation/ChooseAIType';
 import EntertainmentQuestions from './pages/Create-func/Foundation/questions/EntertainmentQuestions';
 import BusinessQuestions from './pages/Create-func/Foundation/questions/BusinessQuestions';
@@ -22,6 +24,7 @@ import TrainingQuestions from './pages/Create-func/Foundation/questions/Training
 import AIAssistantQuestions from './pages/Create-func/Foundation/questions/AIAssistantQuestions';
 import AICharacterQuestions from './pages/Create-func/Foundation/questions/AICharacterQuestions';
 import ConfigurationBlock from './pages/Create-func/Foundation/ConfigurationBlock';
+import BuiltInInterfaces from './pages/Create-func/Interface/BuiltInInterfaces';
 
 
 function App() {
@@ -41,8 +44,10 @@ function App() {
         <Route path="chat/:chatId/pushbutton-interface/:slug" element={<PushButtonChatInterfacePage />} />
         <Route path="chat/:chatId/answer/:convName" element={<AnswerOfModalChatInterfacePage />} />
         <Route path="/create" element={<FoundationTypeChoice />} />
+        <Route path="/create/interface" element={<InterfaceTypeChoice />} />
         <Route path="/create/add-foundation" element={<AddFoundation />} />
-        <Route path="/create/foundation" element={<CreateFoundationModeTypeChoice />} />
+        <Route path="/create/add-interface" element={<AddInterface />} />
+        <Route path="/create/foundation" element={<ModeTypeChoice />} />
         <Route path="/create/fast-mode/ai-type" element={<ChooseAIType />} />
         <Route path="/create/foundation/entertainment" element={<EntertainmentQuestions />} />
         <Route path="/create/foundation/business" element={<BusinessQuestions />} />
@@ -50,6 +55,7 @@ function App() {
         <Route path="/create/foundation/assistant" element={<AIAssistantQuestions />} />
         <Route path="/create/foundation/character" element={<AICharacterQuestions />} />
         <Route path="/create/advanced-mode/config-block" element={<ConfigurationBlock />} />
+        <Route path="/create/built-in/interfaces" element={<BuiltInInterfaces />} />
       </Routes>
     </MainLayout>
   );

@@ -114,9 +114,11 @@ const ConfigurationBlock: React.FC = () => {
       >
         Back
       </Link>
+    <Link to={"/create/interface"}>
     <button className="px-6 py-2 rounded-md bg-green-500 text-white font-semibold hover:bg-green-600">
       Create
     </button>
+    </Link>
     </div>
       </form>
     </div>

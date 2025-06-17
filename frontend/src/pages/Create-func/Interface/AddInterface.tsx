@@ -22,7 +22,7 @@ export default function AddFoundation() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 py-8">
-      <h1 className="text-black text-4xl font-bold mb-4">Add Foundation</h1>
+      <h1 className="text-black text-4xl font-bold mb-4">Add Interface</h1>
       <p className="text-gray-600 max-w-xl text-center mb-10">
         This means that the user will add a file with the code from a personal computer.
         <br />
@@ -47,7 +47,7 @@ export default function AddFoundation() {
 
       <div className="flex justify-center gap-6">
         <Link
-        to={`/create`}
+        to={`/create/interface`}
         className="px-6 py-2 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50"
       >
         Back
