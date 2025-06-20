@@ -5,11 +5,11 @@ export default function BuiltInInterfaces() {
 
   const handleSelect = (type: 'built-in' | 'add' | 'custom') => {
     if (type === 'built-in') {
-      navigate('/create/foundation');
+      navigate('/create/final-step');
     } else if (type === 'add') {
-      navigate('/create/add-interface');
+      navigate('/create/final-step');
     } else {
-      navigate('/create/custom-interface'); // Adjust this route as needed
+      navigate('/create/final-step'); // Adjust this route as needed
     }
   };
 

@@ -25,6 +25,9 @@ import AIAssistantQuestions from './pages/Create-func/Foundation/questions/AIAss
 import AICharacterQuestions from './pages/Create-func/Foundation/questions/AICharacterQuestions';
 import ConfigurationBlock from './pages/Create-func/Foundation/ConfigurationBlock';
 import BuiltInInterfaces from './pages/Create-func/Interface/BuiltInInterfaces';
+import FinalStep from './pages/Create-func/FinalStep.tsx';
+import ProjectsPage from './pages/Center-of-Controling/ProjectsPage';
+import ChatSettingsPage from './pages/Center-of-Controling/ChatSettingsPage';
 
 
 function App() {
@@ -56,6 +59,9 @@ function App() {
         <Route path="/create/foundation/character" element={<AICharacterQuestions />} />
         <Route path="/create/advanced-mode/config-block" element={<ConfigurationBlock />} />
         <Route path="/create/built-in/interfaces" element={<BuiltInInterfaces />} />
+        <Route path="/create/final-step" element={<FinalStep />} />
+        <Route path="/chats" element={<ProjectsPage />} />
+        <Route path="/settings" element={<ChatSettingsPage />} />
       </Routes>
     </MainLayout>
   );

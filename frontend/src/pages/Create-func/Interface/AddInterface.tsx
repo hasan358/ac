@@ -17,7 +17,7 @@ export default function AddFoundation() {
   const handleAdd = () => {
     // Тут можно отправить файл на сервер или сохранить путь
     alert(`File selected: ${filePath}`);
-    navigate("/create/interface"); // Пример: переход к следующему этапу
+    navigate("/create/final-step"); // Пример: переход к следующему этапу
   };
 
   return (
@@ -30,7 +30,7 @@ export default function AddFoundation() {
       </p>
 
       <div className="w-full max-w-2xl border border-blue-400 rounded-lg shadow-md p-6 mb-10">
-        <label className="block text-left font-medium mb-2">Location:</label>
+        <label className="text-black block text-left font-medium mb-2">Location:</label>
         <div className="flex items-center gap-2 bg-gray-100 rounded px-3 py-2">
           <input
             type="file"
