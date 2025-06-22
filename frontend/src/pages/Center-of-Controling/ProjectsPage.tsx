@@ -13,6 +13,7 @@ const ProjectCard = ({ name }: { name: string }) => (
       </div>
       <span className="text-gray-800">{name}</span>
     </div>
+    <Link to={'/chat/monitization'}>
     <div className="flex items-center gap-4">
       <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
         Public
@@ -21,6 +22,7 @@ const ProjectCard = ({ name }: { name: string }) => (
         <Trash2 size={20} />
       </button>
     </div>
+    </Link>
   </div>
 );
 

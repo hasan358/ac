@@ -28,6 +28,12 @@ import BuiltInInterfaces from './pages/Create-func/Interface/BuiltInInterfaces';
 import FinalStep from './pages/Create-func/FinalStep.tsx';
 import ProjectsPage from './pages/Center-of-Controling/ProjectsPage';
 import ChatSettingsPage from './pages/Center-of-Controling/ChatSettingsPage';
+import MonitizationType from './pages/Center-of-Controling/MonitizationType';
+import PaidChatDetails from './pages/Center-of-Controling/PaidChatDetails';
+import ChatWithAddsDetails from './pages/Center-of-Controling/ChatWithAddsDetails';
+import PricingPlan from './pages/Center-of-Controling/PricingPlan';
+import MonthlyPayment from './pages/Center-of-Controling/MonthlyPayment';
+import LifetimeAccess from './pages/Center-of-Controling/LifetimeAccess';
 
 
 function App() {
@@ -62,6 +68,12 @@ function App() {
         <Route path="/create/final-step" element={<FinalStep />} />
         <Route path="/chats" element={<ProjectsPage />} />
         <Route path="/settings" element={<ChatSettingsPage />} />
+        <Route path="/chat/monitization" element={<MonitizationType />} />
+        <Route path="/details/paid" element={<PaidChatDetails />} />
+        <Route path="/details/ads" element={<ChatWithAddsDetails />} />
+        <Route path="/pricing-plan" element={<PricingPlan />} />
+        <Route path="/monthly/payment" element={<MonthlyPayment />} />
+        <Route path="/lifetime/payment" element={<LifetimeAccess />} />
       </Routes>
     </MainLayout>
   );
