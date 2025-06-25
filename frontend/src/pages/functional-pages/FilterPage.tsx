@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import SearchBar from '../components/SearchBar';
-import FilterButton from '../components/FilterButton';
-import AvatarOrSignIn from '../components/AvatarOrSignIn';
-import ChatCard from '../components/ChatCard';
+import SearchBar from '../../components/SearchBar';
+import FilterButton from '../../components/FilterButton';
+import AvatarOrSignIn from '../../components/AvatarOrSignIn';
+import ChatCard from '../../components/ChatCard';
 
 const FilterPage: React.FC = () => {
   const [search, setSearch] = useState('');

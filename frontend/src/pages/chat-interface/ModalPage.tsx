@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Home } from 'lucide-react';
-import SearchBar from '../components/SearchBar';
-import FilterButton from '../components/FilterButton';
-import AvatarOrSignIn from '../components/AvatarOrSignIn';
-import ChatCard from '../components/ChatCard';
+import SearchBar from '../../components/SearchBar';
+import FilterButton from '../../components/FilterButton';
+import AvatarOrSignIn from '../../components/AvatarOrSignIn';
+import ChatCard from '../../components/ChatCard';
 
 interface ChatData {
   title: string;
-  description?: string; // Made optional to match chatData
+  description?: string;
   tags?: string[];
   rating?: string;
   comments?: string;
@@ -49,7 +49,7 @@ const chatData: Record<string, ChatData> = {
     interfaceType: 'classic',
   },
   ex: {
-    title: 'Example', // Unique title
+    title: 'Example',
     description: 'AI-powered travel assistant for planning trips.',
     interfaceType: 'push-button',
   },
@@ -72,7 +72,7 @@ const formatSlug = (slug?: string) => {
     .join(' ');
 };
 
-const ClassicInterfacePage: React.FC = () => {
+const ModalChatInterfacePage: React.FC = () => {
   const { chatId, slug } = useParams<{ chatId?: string; slug?: string }>(); // Изменено с convName на slug
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
@@ -187,20 +187,18 @@ It is a long established fact that a reader will be distracted by the readable c
                 Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                 Voluptates maiores at placeat explicabo? Ex doloribus rerum culpa, ipsam iste iusto!
               </p>
-              <strong className="block mt-4 text-2xl">Why do we use it?</strong>
-              <p className="mt-2 text-2xl">
-                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                 Ad, ratione atque ipsam dolores eaque soluta harum beatae ullam itaque impedit consequatur aliquam veniam ab veritatis error omnis quasi cum pariatur.
-              </p>
+              <Link to={`/${chatId}/answer/${slug}`}>
+                <button className="mt-4 px-30 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
+                  Lorem Ipsum
+                </button>
+              </Link>
             </div>
           </div>
-
           {/* Input */}
           <div className="w-full mt-10">
             <textarea
-              placeholder="Write a prompt"
-              className="fixed bottom-10 left-165  w-[830px] min-h-[120px] bg-white p-4 border border-gray-400 text-black rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+              placeholder="Write a prompt..."
+              className="fixed bottom-10 left-165 w-[830px] min-h-[120px] bg-white p-4 border border-gray-400 text-black rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
             />
           </div>
         </div>
@@ -209,4 +207,4 @@ It is a long established fact that a reader will be distracted by the readable c
   );
 };
 
-export default ClassicInterfacePage;
+export default ModalChatInterfacePage;

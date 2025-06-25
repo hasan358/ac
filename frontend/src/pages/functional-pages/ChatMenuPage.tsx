@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Home } from 'lucide-react';
-import SearchBar from '../components/SearchBar';
-import FilterButton from '../components/FilterButton';
-import AvatarOrSignIn from '../components/AvatarOrSignIn';
-import ChatCard from '../components/ChatCard';
+import SearchBar from '../../components/SearchBar';
+import FilterButton from '../../components/FilterButton';
+import AvatarOrSignIn from '../../components/AvatarOrSignIn';
+import ChatCard from '../../components/ChatCard';
 
 interface ChatData {
   title: string;

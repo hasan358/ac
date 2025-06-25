@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Home } from 'lucide-react';
-import SearchBar from '../components/SearchBar';
-import FilterButton from '../components/FilterButton';
-import AvatarOrSignIn from '../components/AvatarOrSignIn';
-import ChatCard from '../components/ChatCard';
+import SearchBar from '../../components/SearchBar';
+import FilterButton from '../../components/FilterButton';
+import AvatarOrSignIn from '../../components/AvatarOrSignIn';
+import ChatCard from '../../components/ChatCard';
 
 interface ChatData {
   title: string;
-  description?: string;
+  description?: string; // Made optional to match chatData
   tags?: string[];
   rating?: string;
   comments?: string;
@@ -49,7 +49,7 @@ const chatData: Record<string, ChatData> = {
     interfaceType: 'classic',
   },
   ex: {
-    title: 'Example',
+    title: 'Example', // Unique title
     description: 'AI-powered travel assistant for planning trips.',
     interfaceType: 'push-button',
   },
@@ -72,10 +72,11 @@ const formatSlug = (slug?: string) => {
     .join(' ');
 };
 
-const ModalChatInterfacePage: React.FC = () => {
+const PushButtonInterfacePage: React.FC = () => {
   const { chatId, slug } = useParams<{ chatId?: string; slug?: string }>(); // Изменено с convName на slug
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null);
 
   // Логирование для отладки
   console.log('chatId:', chatId); // Должно вывести: vison
@@ -94,24 +95,14 @@ const ModalChatInterfacePage: React.FC = () => {
   const filteredChats = POPULAR_CHATS.filter((chat) =>
     chat.title.toLowerCase().includes(search.toLowerCase())
   );
-
-  const messages = [
-    {
-      role: 'user',
-      text: 'Lorem Ipsum',
-    },
-    {
-      role: 'ai',
-      text: `**What is Lorem Ipsum?**
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has been the industry's standard dummy text ever since the 1500s.
-
-**Why do we use it?**
-It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.`,
-    },
+  const exampleButtons = [
+    "Suggest a trip plan",
+    "What can you do?",
+    "Summarize this paragraph",
   ];
 
   return (
-    <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
+    <div className="h-screen w-full bg-gray-50 flex flex-col overflow-auto">
       {/* Topbar */}
       <header className="flex justify-between items-center px-4 py-2">
         <div className="flex items-center gap-2 w-[440px]">
@@ -129,7 +120,7 @@ It is a long established fact that a reader will be distracted by the readable c
           <AvatarOrSignIn isSignedIn={false} />
           <Link
             to="/home"
-            className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition"
+            className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100"
           >
             <Home size={20} className="text-black" />
           </Link>
@@ -139,6 +130,7 @@ It is a long established fact that a reader will be distracted by the readable c
 
       {/* Main section */}
       <section className="relative flex-1 flex">
+        {/* Vertical separator */}
         <div className="absolute left-[455px] top-0 bottom-0 w-px bg-gray-300 z-0" />
 
         {/* Sidebar */}
@@ -157,7 +149,7 @@ It is a long established fact that a reader will be distracted by the readable c
           ))}
         </div>
 
-        {/* Right Section */}
+        {/* Chat Area */}
         <div className="flex flex-col flex-1 p-10 gap-6">
           {/* Header */}
           <div className="flex items-center gap-4 pb-4 w-full">
@@ -173,33 +165,43 @@ It is a long established fact that a reader will be distracted by the readable c
               </Link>
             </div>
           </div>
-          <hr className="border border-gray-300 w-full mb-12" />
-          {/* Chat Area */}
-          <div className="flex-1 overflow-y-auto space-y-6">
-            <div className="mb-15 ml-215 max-w-[125px] bg-gray-200 text-black px-4 py-2 rounded-t-xl rounded-bl-xl shadow">
-              {messages[0].text}
+          <hr className="border border-gray-300 w-full mb-10" />
+          <h2 className="text-2xl font-semibold text-gray-700 text-center">How can I help you?</h2>
+
+          {/* User selection */}
+          {selectedPrompt ? (
+            <div className="mb-10 ml-auto max-w-[60%] bg-blue-100 text-black px-6 py-3 rounded-xl text-center shadow">
+              {selectedPrompt}
             </div>
-            <div className="text-gray-800 px-45">
-              <strong className="block text-2xl">What is Lorem Ipsum?</strong>
-              <p className="mt-2 text-2xl">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                It has been the industry's standard dummy text ever since the 1500s.
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Voluptates maiores at placeat explicabo? Ex doloribus rerum culpa, ipsam iste iusto!
-              </p>
-              <Link to={`/${chatId}/answer/${slug}`}>
-                <button className="mt-4 px-30 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
-                  Lorem Ipsum
-                </button>
-              </Link>
+          ) : null}
+
+          {/* AI response */}
+          {selectedPrompt && (
+            <div className="text-gray-800 px-10 text-lg">
+              <p><strong>Answer:</strong> This is a placeholder answer for: <em>{selectedPrompt}</em></p>
             </div>
-          </div>
-          {/* Input */}
-          <div className="w-full mt-10">
-            <textarea
-              placeholder="Write a prompt..."
-              className="fixed bottom-10 left-165 w-[830px] min-h-[120px] bg-white p-4 border border-gray-400 text-black rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-            />
+          )}
+
+          {/* Buttons */}
+<div className="fixed bottom-0 left-270 transform -translate-x-1/2 w-full max-w-2xl px-10 pb-6 z-10">
+            <div className="flex flex-col gap-6 justify-center pt-6">
+              {exampleButtons.map((prompt, index) => (
+                <div
+                  key={index}
+                  onClick={() => setSelectedPrompt(prompt)}
+                  className={`flex items-center cursor-pointer p-4 rounded-lg border transition shadow-sm ${
+                    selectedPrompt === prompt
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-300 hover:bg-gray-100'
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center font-semibold mr-4">
+                    {String.fromCharCode(65 + index)}
+                  </div>
+                  <span className="text-gray-800 text-lg sm:text-base">{prompt}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -207,4 +209,4 @@ It is a long established fact that a reader will be distracted by the readable c
   );
 };
 
-export default ModalChatInterfacePage;
+export default PushButtonInterfacePage;

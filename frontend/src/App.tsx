@@ -1,39 +1,39 @@
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import MainPage from "./pages/MainPage";
-import SignInPage from "./pages/SignInPage";
-import HomePage from "./pages/HomePage";
-import AboutUSPage from "./pages/AboutUsPage";
-import FilterPage from "./pages/FilterPage";
-import DescriptionPage from './pages/DescriptionPage';
-import ChatMenuPage from './pages/ChatMenuPage';
-import CheckoutPage from './pages/CheckoutPage';
-import ClassicChatInterfacePage from './pages/ClassicChatInterfacePage';
-import ModalChatInterfacePage from './pages/ModalChatInterfacePage';
-import AnswerOfModalChatInterfacePage from './pages/AnswerOfModalChatInterfacePage';
-import PushButtonChatInterfacePage from './pages/PushButtonChatInterfacePage';
-import FoundationTypeChoice from './pages/Create-func/Foundation/FoundationTypeChoice';
-import InterfaceTypeChoice from './pages/Create-func/Interface/InterfaceTypeChoice';
-import ModeTypeChoice from './pages/Create-func/Foundation/ModeTypeChoice';
-import AddFoundation from './pages/Create-func/Foundation/AddFoundation';
-import AddInterface from './pages/Create-func/Interface/AddInterface';
-import ChooseAIType from './pages/Create-func/Foundation/ChooseAIType';
-import EntertainmentQuestions from './pages/Create-func/Foundation/questions/EntertainmentQuestions';
-import BusinessQuestions from './pages/Create-func/Foundation/questions/BusinessQuestions';
-import TrainingQuestions from './pages/Create-func/Foundation/questions/TrainingQuestions';
-import AIAssistantQuestions from './pages/Create-func/Foundation/questions/AIAssistantQuestions';
-import AICharacterQuestions from './pages/Create-func/Foundation/questions/AICharacterQuestions';
-import ConfigurationBlock from './pages/Create-func/Foundation/ConfigurationBlock';
-import BuiltInInterfaces from './pages/Create-func/Interface/BuiltInInterfaces';
-import FinalStep from './pages/Create-func/FinalStep.tsx';
-import ProjectsPage from './pages/Center-of-Controling/ProjectsPage';
-import ChatSettingsPage from './pages/Center-of-Controling/ChatSettingsPage';
-import MonitizationType from './pages/Center-of-Controling/MonitizationType';
-import PaidChatDetails from './pages/Center-of-Controling/PaidChatDetails';
-import ChatWithAddsDetails from './pages/Center-of-Controling/ChatWithAddsDetails';
-import PricingPlan from './pages/Center-of-Controling/PricingPlan';
-import MonthlyPayment from './pages/Center-of-Controling/MonthlyPayment';
-import LifetimeAccess from './pages/Center-of-Controling/LifetimeAccess';
+import SignInPage from "./pages/functional-pages/SignInPage";
+import HomePage from "./pages/company-pages/HomePage";
+import AboutUSPage from "./pages/company-pages/AboutUsPage";
+import FilterPage from "./pages/functional-pages/FilterPage";
+import DescriptionPage from './pages/temprary-pages/DescriptionPage';
+import ChatMenuPage from './pages/functional-pages/ChatMenuPage';
+import CheckoutPage from './pages/temprary-pages/CheckoutPage';
+import ClassicPage from './pages/chat-interface/ClassicPage';
+import ModalPage from './pages/chat-interface/ModalPage';
+import AnswerOfModalPage from './pages/chat-interface/AnswerOfModalPage';
+import PushButtonPage from './pages/chat-interface/PushButtonPage';
+import FoundationType from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/choices/FoundationType';
+import InterfaceType from './pages/process-of-custom-chat-creation/interface-of-custom-chat/InterfaceType';
+import ModeType from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/choices/ModeType';
+import FoundationAdding from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/creation/FoundationAdding';
+import InterfaceAdding from './pages/process-of-custom-chat-creation/interface-of-custom-chat/InterfaceAdding.tsx';
+import AIType from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/choices/AIType';
+import EntertainmentAI from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/creation/questions/EntertainmentAI';
+import BusinessAI from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/creation/questions/BusinessAI';
+import TrainingAI from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/creation/questions/TrainingAI';
+import AIAssistant from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/creation/questions/AIAssistant';
+import AICharacter from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/creation/questions/AICharacter';
+import ConfigurationBlock from './pages/process-of-custom-chat-creation/foundation-of-custom-chat/creation/ConfigurationBlock';
+import BuiltInInterfaces from './pages/process-of-custom-chat-creation/interface-of-custom-chat/BuiltInInterfaces';
+import FinalStep from './pages/process-of-custom-chat-creation/FinalStep.tsx';
+import SettingsPage from './pages/custom-chat-control/SettingsPage';
+import CustomChatPage from './pages/custom-chat-control/CustomChatPage.tsx';
+import MonitizationType from './pages/custom-chat-control/publication-process/MonitizationType.tsx';
+import PaidChat from './pages/custom-chat-control/publication-process/details/PaidChat.tsx';
+import ChatWithAdds from './pages/custom-chat-control/publication-process/details/ChatWithAdds.tsx';
+import PricingPlan from './pages/custom-chat-control/publication-process/payment/PricingPlan.tsx';
+import MonthlySubscription from './pages/custom-chat-control/publication-process/payment/payment-check-out-pages/MonthlySubscription.tsx';
+import LifetimeAccess from './pages/custom-chat-control/publication-process//payment/payment-check-out-pages/LifetimeAccess.tsx';
 
 
 function App() {
@@ -48,31 +48,31 @@ function App() {
         <Route path="/chat/:chatId" element={<DescriptionPage />} /> {/* Для страницы описания чата */}
         <Route path="/chat/:chatId/menu" element={<ChatMenuPage />} />
         <Route path="/chat/:chatId/checkout-page" element={<CheckoutPage />} />
-        <Route path="chat/:chatId/classic-interface/:slug" element={<ClassicChatInterfacePage />} />
-        <Route path="chat/:chatId/model-interface/:slug" element={<ModalChatInterfacePage />} />
-        <Route path="chat/:chatId/pushbutton-interface/:slug" element={<PushButtonChatInterfacePage />} />
-        <Route path="chat/:chatId/answer/:convName" element={<AnswerOfModalChatInterfacePage />} />
-        <Route path="/create" element={<FoundationTypeChoice />} />
-        <Route path="/create/interface" element={<InterfaceTypeChoice />} />
-        <Route path="/create/add-foundation" element={<AddFoundation />} />
-        <Route path="/create/add-interface" element={<AddInterface />} />
-        <Route path="/create/foundation" element={<ModeTypeChoice />} />
-        <Route path="/create/fast-mode/ai-type" element={<ChooseAIType />} />
-        <Route path="/create/foundation/entertainment" element={<EntertainmentQuestions />} />
-        <Route path="/create/foundation/business" element={<BusinessQuestions />} />
-        <Route path="/create/foundation/training" element={<TrainingQuestions />} />
-        <Route path="/create/foundation/assistant" element={<AIAssistantQuestions />} />
-        <Route path="/create/foundation/character" element={<AICharacterQuestions />} />
+        <Route path="chat/:chatId/classic-interface/:slug" element={<ClassicPage />} />
+        <Route path="chat/:chatId/model-interface/:slug" element={<ModalPage />} />
+        <Route path="chat/:chatId/pushbutton-interface/:slug" element={<PushButtonPage />} />
+        <Route path="chat/:chatId/answer/:convName" element={<AnswerOfModalPage />} />
+        <Route path="/create" element={<FoundationType />} />
+        <Route path="/create/interface" element={<InterfaceType />} />
+        <Route path="/create/add-foundation" element={<FoundationAdding />} />
+        <Route path="/create/add-interface" element={<InterfaceAdding />} />
+        <Route path="/create/foundation" element={<ModeType />} />
+        <Route path="/create/fast-mode/ai-type" element={<AIType />} />
+        <Route path="/create/foundation/entertainment" element={<EntertainmentAI />} />
+        <Route path="/create/foundation/business" element={<BusinessAI />} />
+        <Route path="/create/foundation/training" element={<TrainingAI />} />
+        <Route path="/create/foundation/assistant" element={<AIAssistant />} />
+        <Route path="/create/foundation/character" element={<AICharacter />} />
         <Route path="/create/advanced-mode/config-block" element={<ConfigurationBlock />} />
         <Route path="/create/built-in/interfaces" element={<BuiltInInterfaces />} />
         <Route path="/create/final-step" element={<FinalStep />} />
-        <Route path="/chats" element={<ProjectsPage />} />
-        <Route path="/settings" element={<ChatSettingsPage />} />
+        <Route path="/chats" element={<SettingsPage />} />
+        <Route path="/settings" element={<CustomChatPage />} />
         <Route path="/chat/monitization" element={<MonitizationType />} />
-        <Route path="/details/paid" element={<PaidChatDetails />} />
-        <Route path="/details/ads" element={<ChatWithAddsDetails />} />
+        <Route path="/details/paid" element={<PaidChat />} />
+        <Route path="/details/ads" element={<ChatWithAdds />} />
         <Route path="/pricing-plan" element={<PricingPlan />} />
-        <Route path="/monthly/payment" element={<MonthlyPayment />} />
+        <Route path="/monthly/payment" element={<MonthlySubscription />} />
         <Route path="/lifetime/payment" element={<LifetimeAccess />} />
       </Routes>
     </MainLayout>
