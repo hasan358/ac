@@ -8,7 +8,7 @@ interface ChatCardProps {
 
 const ChatCard: React.FC<ChatCardProps> = ({ title, description, logoUrl }) => {
   return (
-    <div className="bg-white shadow-sm hover:shadow-md w-[455px] h-[125px]">
+    <div className="bg-white shadow-sm hover:shadow-md w-full md:w-[300px] lg:w-[370px] xl:w-[455px] h-[125px]">
       <div className="flex items-center gap-5 px-5 py-9">
         <img
           src={logoUrl}

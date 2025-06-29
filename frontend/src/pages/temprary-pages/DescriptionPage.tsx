@@ -1,23 +1,24 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import SearchBar from '../../components/SearchBar';
 import FilterButton from '../../components/FilterButton';
 import AvatarOrSignIn from '../../components/AvatarOrSignIn';
 import ChatCard from '../../components/ChatCard';
 
-const chatData: Record<string, {
+interface Chat {
+  id: string;
   title: string;
   description: string;
   tags: string[];
   rating: string;
   comments: string;
   updated: string;
-  id: string;
   ispaid: boolean;
   cost: number;
-}> = {
+}
+
+const chatData: Record<string, Chat> = {
   'gpt': {
     title: 'ChatGPT',
     description: 'This AI helps you with everyday questions and tasks.',
@@ -51,7 +52,7 @@ const chatData: Record<string, {
     ispaid: false,
     cost: 0,
   },
-    'replicate': {
+  'replicate': {
     title: 'Replicate',
     description: 'This AI helps you with everyday questions and tasks.',
     tags: ['Universal ai', 'Assistant', 'English', 'Free', 'Classic chat'],
@@ -98,11 +99,14 @@ const chatData: Record<string, {
 };
 
 const DescriptionPage: React.FC = () => {
-  const { chatId } = useParams();
-  const chat = chatData[chatId || ''];
+  const { chatId } = useParams<{ chatId?: string }>();
+  const chat = chatId ? chatData[chatId] : undefined;
 
   const isSignedIn = false;
   const [search, setSearch] = React.useState('');
+
+  // Convert chatData to an array for mapping
+  const filteredChats: Chat[] = Object.values(chatData);
 
   if (!chat) {
     return (
@@ -113,47 +117,54 @@ const DescriptionPage: React.FC = () => {
     );
   }
 
+  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('Filter button clicked', event);
+  };
+
   return (
     <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
       {/* Topbar */}
-      <header className="flex justify-between items-center px-4 py-2">
-        <div className="flex items-center gap-2 w-[440px]">
+      <header className="flex flex-col md:flex-row items-start md:items-center px-4 py-2 gap-15 md:gap-0 w-full">
+        {/* Left part: search + filter */}
+        <div className="w-full md:w-[440px] flex items-center gap-2 order-2 md:order-1">
           <SearchBar
             value={search}
             onChange={setSearch}
             aria-label="Search AI chats"
           />
           <Link to="/filter" aria-label="Go to filter page">
-            <FilterButton onClick={() => {}} />
+            <FilterButton onClick={handleFilterClick} />
           </Link>
         </div>
-        <nav className="flex items-center gap-5">
-          <AvatarOrSignIn isSignedIn={isSignedIn} />
-          <Link
-            to="/home"
-            className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
-            aria-label="Go to about page"
-          >
-            <Home size={20} className="text-black" />
-          </Link>
-        </nav>
+
+        {/* Right part: avatar and home */}
+        <div className="w-full md:w-auto flex items-center justify-end order-1 md:order-2 md:ml-auto">
+          <div className="flex items-center gap-2">
+            <AvatarOrSignIn isSignedIn={isSignedIn} />
+            <Link
+              to="/home"
+              className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
+              aria-label="Go to about page"
+            >
+              <Home size={20} className="text-black" />
+            </Link>
+          </div>
+        </div>
       </header>
 
       <hr className="border border-gray-300 w-full" />
 
       {/* Main section */}
       <section className="relative flex-1 flex">
-        <div className="absolute left-[455px] top-0 bottom-0 w-px bg-gray-300 z-0" />
-
-        {/* Left panel */}
-        <div className="relative w-[455px] border-r border-gray-300 z-0">
-          {Object.keys(chatData).map((id, i) => (
-            <React.Fragment key={id}>
-              {i > 0 && <hr className="border-t border-gray-300 w-full" />}
-              <Link to={`/chat/${id}`}>
+        <div className="absolute left-[0px] top-0 bottom-0 w-px bg-gray-300 z-0 xl:left-[455px] lg:left-[370px] md:left-[300px]" />
+        <div className="flex flex-col gap-0">
+          {filteredChats.map((chat: Chat, idx: number) => (
+            <React.Fragment key={chat.id}>
+              {idx > 0 && <hr className="border-t border-gray-300 w-full" />}
+              <Link to={`/chat/${chat.id}`}>
                 <ChatCard
-                  title={chatData[id].title}
-                  description={chatData[id].description}
+                  title={chat.title}
+                  description={chat.description}
                   logoUrl="/ai-logo-placeholder.png"
                 />
               </Link>
@@ -190,27 +201,28 @@ const DescriptionPage: React.FC = () => {
           </div>
 
           <div className="flex gap-4 mt-4">
-  <Link
-    to={`/`}
-    className="px-6 py-2 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50"
-  >
-    Back
-  </Link>
+            <Link
+              to={`/`}
+              className="px-6 py-2 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50"
+            >
+              Back
+            </Link>
 
-  {chat.ispaid ? (
-    <Link to={`/chat/${chat.id}/checkout-page`}>
-    <button className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
-      Buy for ${chat.cost}
-    </button>
-    </Link>
-  ) : (
-  <Link to={`/chat/${chat.id}/menu`}>
-    <button className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
-      Try
-    </button>
-  </Link>
-  )}
-</div>
+            {chat.ispaid ? (
+              <Link to={`/chat/${chat.id}/checkout-page`}>
+                <button className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
+                  <span className="inline md:hidden">Buy</span>
+                  <span className="hidden md:inline">Buy for ${chat.cost}</span>
+                </button>
+              </Link>
+            ) : (
+              <Link to={`/chat/${chat.id}/menu`}>
+                <button className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
+                  Try
+                </button>
+              </Link>
+            )}
+          </div>
         </div>
       </section>
     </div>

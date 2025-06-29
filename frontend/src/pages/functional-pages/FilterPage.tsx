@@ -1,10 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SearchBar from '../../components/SearchBar';
 import FilterButton from '../../components/FilterButton';
 import AvatarOrSignIn from '../../components/AvatarOrSignIn';
 import ChatCard from '../../components/ChatCard';
+
+interface Chat {
+  id: string;
+  title: string;
+  description: string;
+  logoUrl: string;
+}
+
+
+const POPULAR_CHATS: Chat[] = [
+  {
+    id: 'gpt',
+    title: 'ChatGPT',
+    description: 'Your friendly everyday AI for quick tasks and help.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+  {
+    id: 'vison',
+    title: 'Cloud Vison',
+    description: 'Get instant coding assistance from AI.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+  {
+    id: 'hug-face',
+    title: 'Hugging Face',
+    description: 'Discover places and get travel tips powered by AI.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+  {
+    id: 'replicate',
+    title: 'Replicate',
+    description: 'Your friendly everyday AI for quick tasks and help.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+  {
+    id: 'stability-ai',
+    title: 'Stability AI',
+    description: 'Get instant coding assistance from AI.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+  {
+    id: 'ex',
+    title: 'Example',
+    description: 'Discover places and get travel tips powered by AI.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+  {
+    id: 'paid-ex',
+    title: 'Paid Example',
+    description: 'Your friendly everyday AI for quick tasks and help.',
+    logoUrl: '/ai-logo-placeholder.png',
+  },
+];
 
 const FilterPage: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -24,59 +77,71 @@ const FilterPage: React.FC = () => {
   const monetizationOptions = ['Free', 'Paid', 'Chat with ads'];
   const interfaceOptions = ['Classic chat', 'Modal response', 'Push-button'];
 
+  const filteredChats = useMemo(() => {
+    if (!search.trim()) return POPULAR_CHATS;
+    const searchLower = search.toLowerCase();
+    return POPULAR_CHATS.filter(
+      (chat) =>
+        chat.title.toLowerCase().includes(searchLower) ||
+        chat.description.toLowerCase().includes(searchLower)
+    );
+  }, [search]);
+
+    const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      console.log('Filter button clicked', event);
+    };
+
   return (
     <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
       {/* Topbar */}
-      <header className="flex justify-between items-center px-4 py-2">
-        <div className="flex items-center gap-2 w-[440px]">
+      <header className="flex flex-col md:flex-row items-start md:items-center px-4 py-2 gap-15 md:gap-0 w-full">
+        {/* Левая часть: поиск + фильтр */}
+        <div className="w-full md:w-[440px] flex items-center gap-2 order-2 md:order-1">
           <SearchBar
             value={search}
             onChange={setSearch}
             aria-label="Search AI chats"
           />
           <Link to="/filter" aria-label="Go to filter page">
-            <FilterButton onClick={() => {}} />
+            <FilterButton onClick={() => handleFilterClick} />
           </Link>
         </div>
-        <nav className="flex items-center gap-5">
-          <AvatarOrSignIn isSignedIn={isSignedIn} />
-          <Link
-            to="/home"
-            className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
-            aria-label="Go to about page"
-          >
-            <Home size={20} className="text-black" />
-          </Link>
-        </nav>
+      
+        {/* Правая часть: avatar и home */}
+        <div className="w-full md:w-auto flex items-center justify-end order-1 md:order-2 md:ml-auto">
+          <div className="flex items-center gap-2">
+            <AvatarOrSignIn isSignedIn={isSignedIn} />
+            <Link
+              to="/home"
+              className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
+              aria-label="Go to about page"
+            >
+              <Home size={20} className="text-black" />
+            </Link>
+          </div>
+        </div>
       </header>
       <hr className="border border-gray-300 w-full" />
 
       {/* Main section */}
       <section className="relative flex-1 flex">
-        <div className="absolute left-[455px] top-0 bottom-0 w-px bg-gray-300 z-0" />
-        {/* Left panel: chat list */}
-       <div className="relative w-[455px] border-r border-gray-300 z-0">
-  {[
-    { id: 'gpt', title: 'ChatGPT' },
-    { id: 'vison', title: 'Cloud Vision' },
-    { id: 'hug-face', title: 'Hugging Face' },
-    { id: 'replicate', title: 'Replicate' },
-    { id: 'stability-ai', title: 'Stability AI' },
-    { id: 'ex', title: 'Example' },
-    { id: 'paid-ex', title: 'Paid Example' },
-  ].map((chat, i) => (
-    <React.Fragment key={chat.id}>
-      {i > 0 && <hr className="border-t border-gray-300 w-full" />}
-      <Link to={`/chat/${chat.id}`}>
-        <ChatCard
-          title={chat.title}
-          description=""
-          logoUrl="/ai-logo-placeholder.png"
-        />
-      </Link>
-    </React.Fragment>
-  ))}
-</div>
+        <div className="absolute left-[0px] top-0 bottom-0 w-px bg-gray-300 z-0 xl:left-[455px] lg:left-[370px] md:left-[300px]" />        {/* Left panel: chat list */}
+       <div className="flex flex-col gap-0">
+            {filteredChats.map((chat, idx) => (
+              <React.Fragment key={chat.id}>
+                {idx > 0 && (
+                  <hr className="border-t border-gray-300 w-full" />
+                )}
+                <Link to={`/chat/${chat.id}`}>
+                  <ChatCard
+                    title={chat.title}
+                    description={chat.description}
+                    logoUrl={chat.logoUrl}
+                  />
+                </Link>
+              </React.Fragment>
+            ))}
+          </div>
 
 <div className="flex flex-col gap-5 px-6 py-6 flex-1">
   {/* Theme */}
