@@ -7,12 +7,14 @@ import SearchBar from '../../components/SearchBar';
 
 const ProjectCard = ({ name }: { name: string }) => (
   <div className="flex items-center justify-between rounded-md py-3 px-4 hover:bg-gray-50 shadow transition">
-    <div className="flex items-center gap-4">
+    <Link to={`/settings`}><div className="flex items-center gap-4">
       <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
         Ex
       </div>
-      <span className="text-gray-800">{name}</span>
-    </div>
+      <span className="text-gray-800 w-32 md:w-100 truncate overflow-hidden whitespace-nowrap hover:text-scroll">
+      {name}
+    </span>
+    </div></Link>
     <Link to={'/chat/monitization'}>
     <div className="flex items-center gap-4">
       <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
@@ -54,7 +56,7 @@ export default function ProjectsPage() {
       <div className="flex flex-1">
         {/* Sidebar */}
         {/* Content Area */}
-        <div className="flex-1 py-10 px-40">
+        <div className="flex-1 py-10 px-4 xl:px-20">
           {/* Search and Create */}
           <div className="mb-6 space-y-4">
             <div className="w-full">
@@ -69,11 +71,11 @@ export default function ProjectsPage() {
           </div>
 
           {/* Chat List */}
-          <Link to={`/settings`}><div className="space-y-4">
+          <div className="space-y-4">
             {projects.map((project, idx) => (
               <ProjectCard key={idx} name={project} />
             ))}
-          </div></Link>
+          </div>
         </div>
       </div>
     </div>

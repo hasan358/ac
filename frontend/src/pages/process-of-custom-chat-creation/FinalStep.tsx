@@ -34,7 +34,7 @@ export default function FinalStep() {
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col items-center justify-center px-2 py-4">
       <h1 className="text-black text-5xl font-semibold mb-8">Final Stage</h1>
-      <p className="text-gray-600 mb-10">
+      <p className="text-gray-600 mb-10 text-center">
 Here is the remaining information that needs to be filled in      </p>
       <div className="bg-white p-8 rounded-xl shadow-md max-w-3xl w-full">
        <div className="flex items-center space-x-6 mb-8">
