@@ -76,6 +76,8 @@ const ModalChatInterfacePage: React.FC = () => {
   const { chatId, slug } = useParams<{ chatId?: string; slug?: string }>(); // Изменено с convName на slug
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const isSignedIn = false;
+
 
   // Логирование для отладки
   console.log('chatId:', chatId); // Должно вывести: vison
@@ -88,6 +90,9 @@ const ModalChatInterfacePage: React.FC = () => {
     navigate('/menu/gpt');
     return null;
   }
+  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('Filter button clicked', event);
+  };
 
   const currentChat = chatId && chatData[chatId] ? chatData[chatId] : chatData['gpt'] || { title: 'Default Chat' };
 
@@ -113,36 +118,43 @@ It is a long established fact that a reader will be distracted by the readable c
   return (
     <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
       {/* Topbar */}
-      <header className="flex justify-between items-center px-4 py-2">
-        <div className="flex items-center gap-2 w-[440px]">
+      <header className="flex flex-col md:flex-row items-start md:items-center px-4 py-2 gap-15 md:gap-0 w-full">
+        {/* Левая часть: поиск + фильтр */}
+        <div className="w-full md:w-[440px] flex items-center gap-2 order-2 md:order-1">
           <SearchBar
             value={search}
-            onChange={(val: string) => setSearch(val)}
+            onChange={setSearch}
             aria-label="Search AI chats"
-            placeholder="Search..."
           />
           <Link to="/filter" aria-label="Go to filter page">
-            <FilterButton onClick={() => {}} />
+            <FilterButton onClick={() => handleFilterClick} />
           </Link>
         </div>
-        <nav className="flex items-center gap-5">
-          <AvatarOrSignIn isSignedIn={false} />
-          <Link
-            to="/home"
-            className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition"
-          >
-            <Home size={20} className="text-black" />
-          </Link>
-        </nav>
+      
+        {/* Правая часть: avatar и home */}
+        <div className="w-full md:w-auto flex items-center justify-end order-1 md:order-2 md:ml-auto">
+          <div className="flex items-center gap-2">
+            <AvatarOrSignIn isSignedIn={isSignedIn} />
+            <Link
+              to="/home"
+              className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
+              aria-label="Go to about page"
+            >
+              <Home size={20} className="text-black" />
+            </Link>
+          </div>
+        </div>
       </header>
       <hr className="border border-gray-300 w-full" />
 
       {/* Main section */}
       <section className="relative flex-1 flex">
-        <div className="absolute left-[455px] top-0 bottom-0 w-px bg-gray-300 z-0" />
+        <div className="hidden sm:block">
+        {/* Вертикальная линия */}
+        <div className="absolute left-[0px] top-0 bottom-0 w-px bg-gray-300 z-0 xl:left-[455px] lg:left-[370px] md:left-[300px]" />
 
         {/* Sidebar */}
-        <div className="flex flex-col gap-0 w-[455px]">
+        <div className="flex flex-col gap-0">
           {filteredChats.map((chat, idx) => (
             <React.Fragment key={chat.id}>
               {idx > 0 && <hr className="border-t border-gray-300 w-full" />}
@@ -156,11 +168,13 @@ It is a long established fact that a reader will be distracted by the readable c
             </React.Fragment>
           ))}
         </div>
+      </div>
 
         {/* Right Section */}
-        <div className="flex flex-col flex-1 p-10 gap-6">
+        <div className="flex flex-col flex-1 relative">
+  <div className="flex-1 overflow-y-auto p-10 pb-40"> 
           {/* Header */}
-          <div className="flex items-center gap-4 pb-4 w-full">
+          <div className="flex items-center gap-4 pb-4 w-[340px] lg:w-full">
             <h1 className="text-2xl font-bold text-gray-800">
               {formatSlug(slug) || currentChat.title || 'Untitled Chat'}
             </h1>
@@ -173,13 +187,13 @@ It is a long established fact that a reader will be distracted by the readable c
               </Link>
             </div>
           </div>
-          <hr className="border border-gray-300 w-full mb-12" />
+          <hr className="border border-gray-300 w-[350px] mb-12 lg:w-full xl:w-full" />
           {/* Chat Area */}
-          <div className="flex-1 overflow-y-auto space-y-6">
-            <div className="mb-15 ml-215 max-w-[125px] bg-gray-200 text-black px-4 py-2 rounded-t-xl rounded-bl-xl shadow">
+          <div className="space-y-6">
+            <div className="mb-15 max-w-[125px] bg-gray-200 text-black px-4 py-2 rounded-t-xl rounded-bl-xl shadow relative -right-50 md:-right-60 lg:-right-110 xl:-right-190">
               {messages[0].text}
             </div>
-            <div className="text-gray-800 px-45">
+            <div className="text-gray-800 px-5 xl:px-15">
               <strong className="block text-2xl">What is Lorem Ipsum?</strong>
               <p className="mt-2 text-2xl">
                 Lorem Ipsum is simply dummy text of the printing and typesetting industry.
@@ -194,13 +208,14 @@ It is a long established fact that a reader will be distracted by the readable c
               </Link>
             </div>
           </div>
-          {/* Input */}
-          <div className="w-full mt-10">
-            <textarea
-              placeholder="Write a prompt..."
-              className="fixed bottom-10 left-165 w-[830px] min-h-[120px] bg-white p-4 border border-gray-400 text-black rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
-            />
           </div>
+          {/* Input */}
+          <div className="w-full fixed bottom-4 px-4">
+  <textarea
+    placeholder="Write a prompt..."
+    className="w-full max-w-4xl mx-auto min-h-[120px] bg-white p-4 border border-gray-400 text-black rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 md:ml-[150px] lg:ml-[185px] xl:ml-[227.5px]"
+  />
+</div>
         </div>
       </section>
     </div>

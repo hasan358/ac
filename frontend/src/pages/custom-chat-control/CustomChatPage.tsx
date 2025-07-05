@@ -124,7 +124,7 @@ export default function ChatSettingsPage() {
           </div>
         </div>
         <hr className="border border-gray-900 w-full mb-30" />
-        <p className="text-black text-4xl ml-70">Settings</p>
+        <p className="text-black text-4xl ml-35 md:ml-70">Settings</p>
         <div className="flex justify-between border-b py-2">
           <span className="text-black text-2xl font-medium">Name :</span>
           <span className="text-black bg-gray-100 px-4 py-1 rounded-md">{chat.name}</span>
@@ -208,13 +208,13 @@ export default function ChatSettingsPage() {
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-8 ml-35">Subscription validaty period</h2>
+              <h2 className="text-center text-2xl font-semibold text-gray-900 mb-8 ml-5 md:ml-3">Subscription validaty period</h2>
               
               <div className="space-y-6">
                   <div className="flex items-center">
                     <img
     src="/sub-validity-period.png"
-    className="w-100 h-100 ml-23"
+    className="w-100 h-100 ml-2 md:ml-23"
   />
                     </div>
                 

@@ -91,6 +91,10 @@ const ChatMenuPage: React.FC = () => {
     const newChat = `chat ${conversations.length + 1}`;
     setConversations([newChat, ...conversations]);
   };
+  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('Filter button clicked', event);
+  };
+
 
   const handleConversationClick = (convName: string) => {
     if (!chatId) return;
@@ -115,103 +119,113 @@ const ChatMenuPage: React.FC = () => {
 
   return (
     <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
-      <header className="flex justify-between items-center px-4 py-2">
-        <div className="flex items-center gap-2 w-[440px]">
-          <SearchBar
-            value={searchChats}
-            onChange={(value: string) => setSearchChats(value)}
-            aria-label="Search"
-            placeholder="Search..."
-          />
-          <Link to="/filter" aria-label="Go to filter page">
-            <FilterButton onClick={() => {}} />
-          </Link>
-        </div>
-        <nav className="flex items-center gap-5">
-          <AvatarOrSignIn isSignedIn={isSignedIn} />
-          <Link
-            to="/home"
-            className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition"
-          >
-            <Home size={20} className="text-black" />
-          </Link>
-        </nav>
-      </header>
+     <header className="flex flex-col md:flex-row items-start md:items-center px-4 py-2 gap-15 md:gap-0 w-full">
+             {/* Левая часть: поиск + фильтр */}
+             <div className="w-full md:w-[440px] flex items-center gap-2 order-2 md:order-1">
+               <SearchBar
+                 value={searchChats}
+                 onChange={setSearchChats}
+                 aria-label="Search AI chats"
+               />
+               <Link to="/filter" aria-label="Go to filter page">
+                 <FilterButton onClick={() => handleFilterClick} />
+               </Link>
+             </div>
+           
+             {/* Правая часть: avatar и home */}
+             <div className="w-full md:w-auto flex items-center justify-end order-1 md:order-2 md:ml-auto">
+               <div className="flex items-center gap-2">
+                 <AvatarOrSignIn isSignedIn={isSignedIn} />
+                 <Link
+                   to="/home"
+                   className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
+                   aria-label="Go to about page"
+                 >
+                   <Home size={20} className="text-black" />
+                 </Link>
+               </div>
+             </div>
+           </header>
       <hr className="border border-gray-300 w-full" />
 
-      <section className="relative flex-1 flex">
-        <div className="absolute left-[455px] top-0 bottom-0 w-px bg-gray-300 z-0" />
-        <div className="flex flex-col gap-0 w-[455px]">
-          {filteredChats.map((chat, idx) => (
-            <React.Fragment key={chat.id}>
-              {idx > 0 && <hr className="border-t border-gray-300 w-full" />}
-              <Link to={`/chat/${chat.id}`}>
-                <ChatCard
-                  title={chat.title}
-                  description={chat.description}
-                  logoUrl={chat.logoUrl}
-                />
-              </Link>
-            </React.Fragment>
-          ))}
-        </div>
-        <div className="flex flex-col items-start p-10 gap-6 flex-1">
-          <div className="flex items-center gap-4 pb-4 w-full">
-  <img
-    src="/ai-logo-placeholder.png"
-    alt={currentChat.title}
-    className="w-12 h-12 flex-shrink-0"
-  />
-  <h1 className="text-2xl font-bold text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis">
-    {currentChat.title}
-  </h1>
-  <div className="flex justify-end gap-4 flex-1">
-    <Link
-      to={`/chat/${chatId}`}
-      className="px-6 py-2 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50"
+       <section className="relative flex-1 flex">
+              <div className="hidden sm:block">
+              {/* Вертикальная линия */}
+              <div className="absolute left-[0px] top-0 bottom-0 w-px bg-gray-300 z-0 xl:left-[455px] lg:left-[370px] md:left-[300px]" />
+      
+              {/* Sidebar */}
+              <div className="flex flex-col gap-0">
+                {filteredChats.map((chat, idx) => (
+                  <React.Fragment key={chat.id}>
+                    {idx > 0 && <hr className="border-t border-gray-300 w-full" />}
+                    <Link to={`/chat/${chat.id}`}>
+                      <ChatCard
+                        title={chat.title}
+                        description={chat.description}
+                        logoUrl={chat.logoUrl}
+                      />
+                    </Link>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+
+        <div className="flex flex-col items-start p-4 sm:p-6 md:p-8 gap-6 flex-1 min-w-0">
+  <div className="flex items-center gap-2 sm:gap-4 pb-4 w-full">
+    <img
+      src="/ai-logo-placeholder.png"
+      alt={currentChat.title}
+      className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex-shrink-0"
+    />
+    <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis max-w-[calc(100%-6rem)] sm:max-w-[calc(100%-8rem)]">
+      {currentChat.title}
+    </h1>
+    <div className="flex justify-end gap-2 sm:gap-4 flex-1">
+      <Link
+        to={`/chat/${chatId}`}
+        className="px-3 py-1 sm:px-4 sm:py-2 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50 text-sm"
+      >
+        Back
+      </Link>
+    </div>
+  </div>
+  <hr className="border border-gray-300 w-full" />
+  <div className="w-full max-w-4xl mx-auto border border-gray-400 rounded-xl p-4 sm:p-6 bg-white mt-4">
+    <div className="mb-4">
+      <SearchBar
+        value={searchConversations}
+        onChange={(value: string) => setSearchConversations(value)}
+        aria-label="Search conversations"
+        placeholder="Search conversations..."
+      />
+    </div>
+    <button
+      onClick={() => handleNewConversation()}
+      className="w-full mb-4 px-4 py-2 text-black border border-black rounded-md font-semibold hover:bg-gray-100 text-sm sm:text-base"
+      aria-label="Start new conversation"
     >
-      Back
-    </Link>
+      New conversation
+    </button>
+    <div className="flex flex-col gap-2">
+      {filteredConversations.length > 0 ? (
+        filteredConversations.map((conv, idx) => (
+          <div
+            key={idx}
+            onClick={() => handleConversationClick(conv)}
+            className="px-4 py-2 text-black border border-gray-300 rounded-md hover:bg-gray-100 cursor-pointer text-sm sm:text-base"
+            role="button"
+            tabIndex={0}
+            aria-label={`Conversation ${conv}`}
+          >
+            {conv}
+          </div>
+        ))
+      ) : (
+        <div className="text-gray-500 text-center text-sm sm:text-base">No conversations found</div>
+      )}
+    </div>
   </div>
 </div>
-          <hr className="border border-gray-300 w-full" />
-          <div className="ml-20 w-[1000px] border border-gray-400 rounded-xl p-6 bg-white mt-5">
-            <div className="mb-4">
-              <SearchBar
-                value={searchConversations}
-                onChange={(value: string) => setSearchConversations(value)}
-                aria-label="Search conversations"
-                placeholder="Search conversations..."
-              />
-            </div>
-            <button
-              onClick={() => handleNewConversation()}
-              className="w-full mb-4 px-4 py-2 text-black border border-black rounded-md font-semibold hover:bg-gray-100"
-              aria-label="Start new conversation"
-            >
-              New conversation
-            </button>
-            <div className="flex flex-col gap-2">
-              {filteredConversations.length > 0 ? (
-                filteredConversations.map((conv, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => handleConversationClick(conv)}
-                    className="px-4 py-2 text-black border border-gray-300 rounded-md hover:bg-gray-100 cursor-pointer"
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`Conversation ${conv}`}
-                  >
-                    {conv}
-                  </div>
-                ))
-              ) : (
-                <div className="text-gray-500 text-center">No conversations found</div>
-              )}
-            </div>
-          </div>
-          {/* Fixed Rating and Comments Section */}
-        </div>
       </section>
     </div>
   );

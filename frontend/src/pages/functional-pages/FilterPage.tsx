@@ -125,6 +125,7 @@ const FilterPage: React.FC = () => {
 
       {/* Main section */}
       <section className="relative flex-1 flex">
+       <div className='hidden sm:block'>
         <div className="absolute left-[0px] top-0 bottom-0 w-px bg-gray-300 z-0 xl:left-[455px] lg:left-[370px] md:left-[300px]" />        {/* Left panel: chat list */}
        <div className="flex flex-col gap-0">
             {filteredChats.map((chat, idx) => (
@@ -141,6 +142,7 @@ const FilterPage: React.FC = () => {
                 </Link>
               </React.Fragment>
             ))}
+          </div>
           </div>
 
 <div className="flex flex-col gap-5 px-6 py-6 flex-1">

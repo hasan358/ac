@@ -118,14 +118,15 @@ const MainPage: React.FC<MainPageProps> = () => {
         {/* Left panel: chat list */}
         <div className="flex flex-col w-full md:w-[300px] lg:w-[370px] xl:w-[455px]">
           {/* + Create Chat (только для мобильной версии) */}
-          <div className="block md:hidden ml-1  mr-1 w-[416px] px-30 py-2 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50">
-            <Link
-              to="/create"
-              className="text-blue-600 text-xl font-bold hover:underline"
-            >
-              + Create Chat
-            </Link>
-          </div>
+      {/* + Create Chat */}
+      <div className="block md:hidden mb-4 px-2">
+        <Link
+          to="/create"
+          className=" inline-block w-full text-center text-blue-600 text-lg font-semibold border border-blue-500 rounded-md py-2 hover:bg-blue-50 transition"
+        >
+          + Create Chat
+        </Link>
+      </div>
 
           {/* + Create Chat (фиксированная кнопка для планшетов и десктопа) */}
           <div className="hidden md:block left-90 bottom-220 -translate-x-1/2 md:fixed md:left-130 md:bottom-100 lg:fixed lg:left-180 lg:bottom-100 xl:fixed xl:left-235 xl:bottom-100 2xl:fixed 2xl:left-275 2xl:bottom-100 z-10">
