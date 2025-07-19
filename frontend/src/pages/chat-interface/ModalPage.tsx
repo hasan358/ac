@@ -4,7 +4,6 @@ import { Home } from 'lucide-react';
 import SearchBar from '../../components/SearchBar';
 import FilterButton from '../../components/FilterButton';
 import AvatarOrSignIn from '../../components/AvatarOrSignIn';
-import ChatCard from '../../components/ChatCard';
 
 interface ChatData {
   title: string;
@@ -55,13 +54,6 @@ const chatData: Record<string, ChatData> = {
   },
 };
 
-const POPULAR_CHATS = Object.keys(chatData).map((id) => ({
-  id,
-  title: chatData[id].title,
-  description: chatData[id].description || '',
-  logoUrl: '/ai-logo-placeholder.png',
-}));
-
 // Функция для форматирования slug
 const formatSlug = (slug?: string) => {
   if (!slug) return null;
@@ -95,10 +87,6 @@ const ModalChatInterfacePage: React.FC = () => {
   };
 
   const currentChat = chatId && chatData[chatId] ? chatData[chatId] : chatData['gpt'] || { title: 'Default Chat' };
-
-  const filteredChats = POPULAR_CHATS.filter((chat) =>
-    chat.title.toLowerCase().includes(search.toLowerCase())
-  );
 
   const messages = [
     {
@@ -149,32 +137,11 @@ It is a long established fact that a reader will be distracted by the readable c
 
       {/* Main section */}
       <section className="relative flex-1 flex">
-        <div className="hidden sm:block">
-        {/* Вертикальная линия */}
-        <div className="absolute left-[0px] top-0 bottom-0 w-px bg-gray-300 z-0 xl:left-[455px] lg:left-[370px] md:left-[300px]" />
-
-        {/* Sidebar */}
-        <div className="flex flex-col gap-0">
-          {filteredChats.map((chat, idx) => (
-            <React.Fragment key={chat.id}>
-              {idx > 0 && <hr className="border-t border-gray-300 w-full" />}
-              <Link to={`/chat/${chat.id}`}>
-                <ChatCard
-                  title={chat.title}
-                  description={chat.description}
-                  logoUrl={chat.logoUrl}
-                />
-              </Link>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
         {/* Right Section */}
         <div className="flex flex-col flex-1 relative">
   <div className="flex-1 overflow-y-auto p-10 pb-40"> 
           {/* Header */}
-          <div className="flex items-center gap-4 pb-4 w-[340px] lg:w-full">
+          <div className="flex items-center gap-4 pb-4 w-full">
             <h1 className="text-2xl font-bold text-gray-800">
               {formatSlug(slug) || currentChat.title || 'Untitled Chat'}
             </h1>
@@ -187,11 +154,13 @@ It is a long established fact that a reader will be distracted by the readable c
               </Link>
             </div>
           </div>
-          <hr className="border border-gray-300 w-[350px] mb-12 lg:w-full xl:w-full" />
+          <hr className="border border-gray-300 w-full mb-12 " />
           {/* Chat Area */}
           <div className="space-y-6">
-            <div className="mb-15 max-w-[125px] bg-gray-200 text-black px-4 py-2 rounded-t-xl rounded-bl-xl shadow relative -right-50 md:-right-60 lg:-right-110 xl:-right-190">
+            <div className='w-full relative left-200'>
+            <div className="  max-w-[125px] bg-gray-200 text-black px-4 py-2 rounded-t-xl rounded-bl-xl shadow ">
               {messages[0].text}
+            </div>
             </div>
             <div className="text-gray-800 px-5 xl:px-15">
               <strong className="block text-2xl">What is Lorem Ipsum?</strong>
@@ -210,10 +179,10 @@ It is a long established fact that a reader will be distracted by the readable c
           </div>
           </div>
           {/* Input */}
-          <div className="w-full fixed bottom-4 px-4">
+          <div className="w-full fixed bottom-4 px-10">
   <textarea
     placeholder="Write a prompt..."
-    className="w-full max-w-4xl mx-auto min-h-[120px] bg-white p-4 border border-gray-400 text-black rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 md:ml-[150px] lg:ml-[185px] xl:ml-[227.5px]"
+    className="w-full mx-auto min-h-[120px] bg-white p-4 border border-gray-400 text-black rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500 "
   />
 </div>
         </div>
