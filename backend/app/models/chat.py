@@ -27,7 +27,6 @@ class PublicChat(Base, BaseChat):
     theme = Column(String(100), nullable=False)
     creator_id = Column(Integer, ForeignKey("users.id"))
     creator = relationship("User")
-    conversations = relationship("UserConversation", back_populates="public_chat")  # Исправлено: "Conversation" -> "UserConversation"
 
 class CustomChat(Base, BaseChat):
     __tablename__ = "custom_chats"
@@ -37,4 +36,3 @@ class CustomChat(Base, BaseChat):
     is_public = Column(Boolean, default=False)
     validation_period = Column(DateTime, nullable=True)
 
-    conversations = relationship("UserConversation", back_populates="custom_chat", cascade="all, delete")

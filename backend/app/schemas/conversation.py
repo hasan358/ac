@@ -2,6 +2,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+from app.models.conversation import ChatType
 
 class UserConversationBase(BaseModel):
     name: str
@@ -10,16 +11,13 @@ class UserConversationBase(BaseModel):
 class UserConversationCreate(UserConversationBase):
     user_id: Optional[int] = None  # Устанавливается в эндпоинте
     chat_id: Optional[int] = None  # Для поддержки клиентских запросов
-    is_custom_chat: Optional[bool] = None  # Указывает, является ли чат кастомным
-    custom_chat_id: Optional[int] = None  # Для модели UserConversation
-    public_chat_id: Optional[int] = None  # Для модели UserConversation
+    chat_type: Optional[ChatType] = None  # Указывает, является ли чат кастомным
+
 
 class UserConversationOut(UserConversationBase):
     id: int
     user_id: int
-    custom_chat_id: Optional[int]
     response: Optional[str] = None
-    public_chat_id: Optional[int]
     created_at: datetime
 
     class Config:

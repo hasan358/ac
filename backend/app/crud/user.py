@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate, UserOut
-#from app.core.security import get_password_hash
+from app.core.security import hash_password
 from sqlalchemy.exc import SQLAlchemyError
 
 def create_user(db: Session, user: UserCreate) -> User:
@@ -11,8 +11,7 @@ def create_user(db: Session, user: UserCreate) -> User:
         db_user = User(
             name=user.name,
             email=user.email,
-            #hashed_password=get_password_hash(user.password),
-            hashed_password=user.password,
+            hashed_password=hash_password(user.password),
         )
         db.add(db_user)
         db.commit()

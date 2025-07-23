@@ -4,29 +4,40 @@ from fastapi import HTTPException, status
 from app.models.conversation import UserConversation
 from app.models.chat import CustomChat, PublicChat
 from app.schemas.conversation import UserConversationCreate, UserConversationOut
+from app.services.ai_service import AIService
 import logging
 
 logger = logging.getLogger(__name__)
 
-def create_conversation(db: Session, conv: UserConversationCreate) -> UserConversationOut:
-    logger.info(f"Creating conversation with data: {conv.dict()}")
+async def create_conversation(db: Session, conv: UserConversationCreate) -> UserConversationOut:
+    logger.info(f"Создание разговора с данными: {conv.dict()}")
+
+    ai_url = "https://models.github.ai/inference"
     try:
-        # Проверка существования чата
-        if conv.custom_chat_id and not db.query(CustomChat).filter(CustomChat.id == conv.custom_chat_id).first():
-            raise HTTPException(status_code=400, detail="Custom chat does not exist")
-        if conv.public_chat_id and not db.query(PublicChat).filter(PublicChat.id == conv.public_chat_id).first():
-            raise HTTPException(status_code=400, detail="Public chat does not exist")
-        
-        db_conv = UserConversation(**conv.dict(exclude={'chat_id', 'is_custom_chat'}))  # Исключаем chat_id и is_custom_chat
+        response = await AIService.generate_response(prompt=conv.question, endpoint=ai_url, model='deepseek/DeepSeek-R1-0528')
+        logger.info(f"Ответ от AI-сервиса получен: {response}")
+    except Exception as e:
+        logger.error(f"Ошибка при обращении к AI-сервису: {str(e)}")
+        raise HTTPException(status_code=503, detail="AI-сервис недоступен")
+
+    try:
+        db_conv = UserConversation(
+            user_id=conv.user_id,
+            chat_id=conv.chat_id,
+            chat_type=conv.chat_type,
+            name=conv.name,
+            question=conv.question,
+            response=response  # Сохранение результата generate_response https://models.inference.ai.azure.com
+        )
         db.add(db_conv)
         db.commit()
         db.refresh(db_conv)
-        logger.info(f"Conversation created with id: {db_conv.id}")
+        logger.info(f"Разговор создан с id: {db_conv.id}")
         return UserConversationOut.from_orm(db_conv)
     except Exception as e:
         db.rollback()
-        logger.error(f"Failed to create conversation: {str(e)}")
-        raise HTTPException(status_code=400, detail=f"Failed to create conversation: {str(e)}")
+        logger.error(f"Ошибка при создании разговора: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Не удалось создать разговор: {str(e)}")
 
 def get_conversation(db: Session, conv_id: int) -> UserConversation | None:
     return db.query(UserConversation).filter(UserConversation.id == conv_id).first()

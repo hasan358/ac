@@ -7,7 +7,7 @@ from datetime import datetime
 class MonetizationType(str, Enum):
     free = "Free"
     paid = "Paid"
-    subscription = "Subscription"
+    subscription = "Adds"
 
 
 # 🔹 Общие базовые поля
@@ -22,8 +22,7 @@ class ChatBase(BaseModel):
 
 # 🔹 Public Chat
 class PublicChatCreate(ChatBase):
-    creator_id: int
-
+    pass
 class PublicChatOut(ChatBase):
     id: int
     creator_id: int
@@ -36,13 +35,11 @@ class PublicChatOut(ChatBase):
 # 🔹 Custom Chat
 class CustomChatCreate(ChatBase):
     creator_id: int
-    is_public: bool = False
-    validation_period: Optional[datetime] = None
 
 class CustomChatOut(ChatBase):
     id: int
-    creator_id: int
-    is_public: bool
+    creator_id: int=1
+    is_public: bool = False
     validation_period: Optional[datetime]
     created_at: datetime
 
