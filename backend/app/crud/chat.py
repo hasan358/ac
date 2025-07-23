@@ -2,7 +2,9 @@ from sqlalchemy.orm import Session
 from app.models.chat import PublicChat, CustomChat
 from app.schemas.chat import PublicChatCreate, CustomChatCreate, PublicChatOut, CustomChatOut
 from app.models.user import User
+from app.models.chat import CustomChat
 from sqlalchemy.exc import SQLAlchemyError
+from fastapi import HTTPException
 
 def create_public_chat(db: Session, chat: PublicChatCreate) -> PublicChat:
     try:
@@ -16,19 +18,23 @@ def create_public_chat(db: Session, chat: PublicChatCreate) -> PublicChat:
     except SQLAlchemyError as e:
         db.rollback()
         raise Exception(f"Database error: {str(e)}")
+import logging
 
-def create_custom_chat(db: Session, chat: CustomChatCreate) -> CustomChat:
+logger = logging.getLogger(__name__)
+
+def create_custom_chat(db: Session, chat: CustomChatCreate) -> CustomChatOut:
+    logger.info(f"Creating chat with data: {chat.dict()}")
     try:
-        if chat.user_id and not db.query(User).filter(User.id == chat.user_id).first():
-            raise ValueError("User does exist")
         db_chat = CustomChat(**chat.dict())
         db.add(db_chat)
         db.commit()
         db.refresh(db_chat)
-        return db_chat
-    except SQLAlchemyError as e:
+        logger.info(f"Chat created with id: {db_chat.id}")
+        return CustomChatOut.from_orm(db_chat)
+    except Exception as e:
         db.rollback()
-        raise Exception(f"Database error: {str(e)}")
+        logger.error(f"Failed to create chat: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to create chat: {str(e)}")
 
 def get_public_chat(db: Session, chat_id: int) -> PublicChat | None:
     return db.query(PublicChat).filter(PublicChat.id == chat_id).first()

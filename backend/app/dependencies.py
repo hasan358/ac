@@ -1,7 +1,7 @@
 from app.database import SessionLocal
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from app.services.auth_service import oauth2_scheme, AuthService
 from app.models.user import User
 
@@ -18,14 +18,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    try:
-        payload = AuthService.decode_token(token)
-        user_id = payload.get("sub")
-        if user_id is None:
-            raise credentials_exception
-    except Exception:
+    
+    user_id = AuthService.get_token_sub(token)
+    if user_id is None:
         raise credentials_exception
-
+    
     user = db.query(User).filter(User.id == int(user_id)).first()
     if user is None:
         raise credentials_exception

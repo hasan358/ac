@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 from typing import Optional
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 class AuthService:
     @staticmethod
@@ -20,7 +20,31 @@ class AuthService:
 
     @staticmethod
     def create_access_token(data: dict) -> str:
-        to_encode = data.copy()
-        expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes)
-        to_encode.update({"exp": expire})
-        return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
+        try:
+            to_encode = data.copy()
+            expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes)
+            to_encode.update({"exp": expire})
+            return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
+        except jwt.PyJWTError as e:
+            raise Exception(f"Failed to create access token: {str(e)}")
+
+    @staticmethod
+    def decode_token(db: Session, token: str) -> Optional[User]:
+        try:
+            payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+            user_id: str = payload.get("sub")
+            if user_id is None:
+                return None
+            user = db.query(User).filter(User.id == int(user_id)).first()
+            return user
+        except JWTError:
+            return None
+        
+    @staticmethod
+    def get_token_sub(token: str) -> Optional[str]:
+        try:
+            payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+            user_id: str = payload.get("sub")
+            return user_id
+        except JWTError:
+            return None

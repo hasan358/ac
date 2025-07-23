@@ -1,15 +1,17 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from app.crud.chat import create_custom_chat
 from app.services.chat_service import ChatService
 from app.schemas.chat import CustomChatOut, CustomChatCreate, PublicChatOut, PublicChatCreate
 from app.dependencies import get_db, get_current_user
+from app.models.user import User 
 
 router = APIRouter()
 
 @router.post("/custom/", response_model=CustomChatOut)
-def create_custom_chat(chat: CustomChatCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
+def create_a_custom_chat(chat: CustomChatCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     chat.creator_id = user.id
-    return ChatService.create_custom_chat(db, chat)
+    return create_custom_chat(db, chat)
 
 @router.post("/custom/{chat_id}/publish", response_model=CustomChatOut)
 def publish(chat_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):

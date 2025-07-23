@@ -1,21 +1,32 @@
+# app/crud/conversation.py
 from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
 from app.models.conversation import UserConversation
+from app.models.chat import CustomChat, PublicChat
 from app.schemas.conversation import UserConversationCreate, UserConversationOut
-from app.models.user import User
-from sqlalchemy.exc import SQLAlchemyError
+import logging
 
-def create_conversation(db: Session, conv: UserConversationCreate) -> UserConversation:
+logger = logging.getLogger(__name__)
+
+def create_conversation(db: Session, conv: UserConversationCreate) -> UserConversationOut:
+    logger.info(f"Creating conversation with data: {conv.dict()}")
     try:
-        if not db.query(User).filter(User.id == conv.user_id).first():
-            raise ValueError("User does not exist")
-        db_conv = UserConversation(**conv.dict())
+        # Проверка существования чата
+        if conv.custom_chat_id and not db.query(CustomChat).filter(CustomChat.id == conv.custom_chat_id).first():
+            raise HTTPException(status_code=400, detail="Custom chat does not exist")
+        if conv.public_chat_id and not db.query(PublicChat).filter(PublicChat.id == conv.public_chat_id).first():
+            raise HTTPException(status_code=400, detail="Public chat does not exist")
+        
+        db_conv = UserConversation(**conv.dict(exclude={'chat_id', 'is_custom_chat'}))  # Исключаем chat_id и is_custom_chat
         db.add(db_conv)
         db.commit()
         db.refresh(db_conv)
-        return db_conv
-    except SQLAlchemyError as e:
+        logger.info(f"Conversation created with id: {db_conv.id}")
+        return UserConversationOut.from_orm(db_conv)
+    except Exception as e:
         db.rollback()
-        raise Exception(f"Database error: {str(e)}")
+        logger.error(f"Failed to create conversation: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to create conversation: {str(e)}")
 
 def get_conversation(db: Session, conv_id: int) -> UserConversation | None:
     return db.query(UserConversation).filter(UserConversation.id == conv_id).first()
@@ -28,16 +39,14 @@ def update_conversation(db: Session, conv_id: int, conv_update: UserConversation
         db_conv = db.query(UserConversation).filter(UserConversation.id == conv_id).first()
         if not db_conv:
             return None
-        if conv_update.user_id and not db.query(User).filter(User.id == conv_update.user_id).first():
-            raise ValueError("User does not exist")
         for key, value in conv_update.dict(exclude_unset=True).items():
             setattr(db_conv, key, value)
         db.commit()
         db.refresh(db_conv)
         return db_conv
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.rollback()
-        raise Exception(f"Database error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to update conversation: {str(e)}")
 
 def delete_conversation(db: Session, conv_id: int) -> bool:
     try:
@@ -47,6 +56,6 @@ def delete_conversation(db: Session, conv_id: int) -> bool:
         db.delete(db_conv)
         db.commit()
         return True
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.rollback()
-        raise Exception(f"Database error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Failed to delete conversation: {str(e)}")
