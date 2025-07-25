@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.post("/", response_model=UserConversationOut)
-async def send_message(conv: UserConversationCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+async def send_message(conv: UserConversationCreate, model:str, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     logger.info(f"Получен POST-запрос на /conversations/ с данными: {conv.dict()} от пользователя user_id={user.id}")
     
     # Проверка прав доступа
@@ -20,7 +20,7 @@ async def send_message(conv: UserConversationCreate, db: Session = Depends(get_d
         raise HTTPException(status_code=403, detail="Нельзя указать user_id другого пользователя")
     
     conv.user_id = user.id
-    return await create_conversation(db, conv)
+    return await create_conversation(db, conv, ai_model=model)
 
 @router.get("/", response_model=list[UserConversationOut])
 def history(db: Session = Depends(get_db), user: User = Depends(get_current_user)):

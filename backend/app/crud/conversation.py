@@ -9,12 +9,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-async def create_conversation(db: Session, conv: UserConversationCreate) -> UserConversationOut:
+async def create_conversation(db: Session, conv: UserConversationCreate, ai_model: str) -> UserConversationOut:
     logger.info(f"Создание разговора с данными: {conv.dict()}")
 
     ai_url = "https://models.github.ai/inference"
     try:
-        response = await AIService.generate_response(prompt=conv.question, endpoint=ai_url, model='deepseek/DeepSeek-R1-0528')
+        response = await AIService.generate_response(prompt=conv.question, endpoint=ai_url, model=ai_model)
         logger.info(f"Ответ от AI-сервиса получен: {response}")
     except Exception as e:
         logger.error(f"Ошибка при обращении к AI-сервису: {str(e)}")
