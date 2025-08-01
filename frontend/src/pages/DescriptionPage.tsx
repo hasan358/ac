@@ -1,10 +1,8 @@
-import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Home } from 'lucide-react';
-import SearchBar from '../../components/SearchBar';
-import FilterButton from '../../components/FilterButton';
-import AvatarOrSignIn from '../../components/AvatarOrSignIn';
-import ChatCard from '../../components/ChatCard';
+import SearchBar from '../components/SearchBar';
+import AvatarOrSignIn from '../components/AvatarOrSignIn';
+import ChatCard from '../components/ChatCard';
+import React from 'react';
 
 interface Chat {
   id: string;
@@ -101,8 +99,6 @@ const chatData: Record<string, Chat> = {
 const DescriptionPage: React.FC = () => {
   const { chatId } = useParams<{ chatId?: string }>();
   const chat = chatId ? chatData[chatId] : undefined;
-
-  const isSignedIn = false;
   const [search, setSearch] = React.useState('');
 
   // Convert chatData to an array for mapping
@@ -117,10 +113,6 @@ const DescriptionPage: React.FC = () => {
     );
   }
 
-  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('Filter button clicked', event);
-  };
-
   return (
     <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
       {/* Topbar */}
@@ -132,22 +124,12 @@ const DescriptionPage: React.FC = () => {
             onChange={setSearch}
             aria-label="Search AI chats"
           />
-          <Link to="/filter" aria-label="Go to filter page">
-            <FilterButton onClick={handleFilterClick} />
-          </Link>
         </div>
 
         {/* Right part: avatar and home */}
         <div className="w-full md:w-auto flex items-center justify-end order-1 md:order-2 md:ml-auto">
           <div className="flex items-center gap-2">
-            <AvatarOrSignIn isSignedIn={isSignedIn} />
-            <Link
-              to="/home"
-              className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
-              aria-label="Go to about page"
-            >
-              <Home size={20} className="text-black" />
-            </Link>
+            <AvatarOrSignIn isSignedIn/> {/* Removed isSignedIn prop */}
           </div>
         </div>
       </header>
@@ -157,22 +139,22 @@ const DescriptionPage: React.FC = () => {
       {/* Main section */}
       <section className="relative flex-1 flex">
         <div className='hidden sm:block'>
-        <div className="absolute left-[0px] top-0 bottom-0 w-px bg-gray-300 z-0 xl:left-[455px] lg:left-[370px] md:left-[300px]" />
-        <div className="flex flex-col gap-0">
-          {filteredChats.map((chat: Chat, idx: number) => (
-            <React.Fragment key={chat.id}>
-              {idx > 0 && <hr className="border-t border-gray-300 w-full" />}
-              <Link to={`/chat/${chat.id}`}>
-                <ChatCard
-                  title={chat.title}
-                  description={chat.description}
-                  logoUrl="/ai-logo-placeholder.png"
-                />
-              </Link>
-            </React.Fragment>
-          ))}
+          <div className="absolute left-[0px] top-0 bottom-0 w-px bg-gray-300 z-0 xl:left-[455px] lg:left-[370px] md:left-[300px]" />
+          <div className="flex flex-col gap-0">
+            {filteredChats.map((chat: Chat, idx: number) => (
+              <React.Fragment key={chat.id}>
+                {idx > 0 && <hr className="border-t border-gray-300 w-full" />}
+                <Link to={`/${chat.id}/menu`}>
+                  <ChatCard
+                    title={chat.title}
+                    description={chat.description}
+                    logoUrl="/ai-logo-placeholder.png"
+                  />
+                </Link>
+              </React.Fragment>
+            ))}
+          </div>
         </div>
-      </div>
 
         {/* Right panel */}
         <div className="flex flex-col gap-4 px-10 py-6 flex-1">
@@ -184,11 +166,6 @@ const DescriptionPage: React.FC = () => {
             />
             <div>
               <h1 className="text-2xl font-bold text-gray-800">{chat.title}</h1>
-              <div className="text-sm text-gray-500">
-                Rating: <span className="text-yellow-500 font-medium">{chat.rating}★</span> |
-                Comments: <span className="font-medium">{chat.comments}</span> |
-                Last update: <span className="text-gray-400">{chat.updated}</span>
-              </div>
             </div>
           </div>
 
@@ -204,26 +181,11 @@ const DescriptionPage: React.FC = () => {
 
           <div className="flex gap-4 mt-4">
             <Link
-              to={`/`}
+              to={`/${chatId}/menu`}
               className="px-6 py-2 rounded-md border border-blue-500 text-blue-600 hover:bg-blue-50"
             >
               Back
             </Link>
-
-            {chat.ispaid ? (
-              <Link to={`/chat/${chat.id}/checkout-page`}>
-                <button className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
-                  <span className="inline md:hidden">Buy</span>
-                  <span className="hidden md:inline">Buy for ${chat.cost}</span>
-                </button>
-              </Link>
-            ) : (
-              <Link to={`/chat/${chat.id}/menu`}>
-                <button className="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600">
-                  Try
-                </button>
-              </Link>
-            )}
           </div>
         </div>
       </section>

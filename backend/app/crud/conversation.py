@@ -14,8 +14,13 @@ async def create_conversation(db: Session, conv: UserConversationCreate, ai_mode
 
     ai_url = "https://models.github.ai/inference"
     try:
+        # Сначала получаем ответ от AI-сервиса
         response = await AIService.generate_response(prompt=conv.question, endpoint=ai_url, model=ai_model)
         logger.info(f"Ответ от AI-сервиса получен: {response}")
+
+        # Затем генерируем имя разговора на основе ответа
+        name = await AIService.generate_conv_name(response_content=response, endpoint=ai_url, model=ai_model)
+        logger.info(f"Имя разговора сгенерировано: {name}")
     except Exception as e:
         logger.error(f"Ошибка при обращении к AI-сервису: {str(e)}")
         raise HTTPException(status_code=503, detail="AI-сервис недоступен")
@@ -25,9 +30,9 @@ async def create_conversation(db: Session, conv: UserConversationCreate, ai_mode
             user_id=conv.user_id,
             chat_id=conv.chat_id,
             chat_type=conv.chat_type,
-            name=conv.name,
+            name=name,
             question=conv.question,
-            response=response  # Сохранение результата generate_response https://models.inference.ai.azure.com
+            response=response
         )
         db.add(db_conv)
         db.commit()

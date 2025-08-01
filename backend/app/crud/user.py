@@ -36,7 +36,7 @@ def update_user(db: Session, user_id: int, user_update: UserOut) -> User | None:
             raise ValueError("User with this email already exists")
         update_data = user_update.dict(exclude_unset=True)
         if "password" in update_data:
-            update_data["hashed_password"] = get_password_hash(update_data.pop("password"))
+            update_data["hashed_password"] = hash_password(update_data.pop("password"))
         for key, value in update_data.items():
             setattr(db_user, key, value)
         db.commit()

@@ -5,7 +5,6 @@ from typing import Optional
 from app.models.conversation import ChatType
 
 class UserConversationBase(BaseModel):
-    name: str
     question: str
 
 class UserConversationCreate(UserConversationBase):
@@ -15,6 +14,7 @@ class UserConversationCreate(UserConversationBase):
 
 
 class UserConversationOut(UserConversationBase):
+    name: str
     id: int
     user_id: int
     response: Optional[str] = None

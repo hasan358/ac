@@ -23,4 +23,19 @@ class AIService:
     )
        return response.choices[0].message.content
 
-    
+    @staticmethod
+    async def generate_conv_name(response_content: str, endpoint: str, model: str) -> str:
+       client = ChatCompletionsClient(
+        endpoint=endpoint,
+        credential=AzureKeyCredential(settings.ai_api_key),
+    )
+       response = client.complete(
+        messages=[
+            SystemMessage("Give a five to three words summary."),
+            UserMessage(response_content),
+        ],
+        temperature=1.0,
+        top_p=1.0,
+        model=model
+     )
+       return response.choices[0].message.content
