@@ -4,6 +4,8 @@ import ChatCard from '../components/ChatCard';
 import { Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import AvatarOrSignIn from '../components/AvatarOrSignIn';
+import { useAuth } from '../context/AuthContext';
+
 
 interface Message {
   id: string;
@@ -99,6 +101,8 @@ const ModalChatInterfacePage: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatId = 'gpt'; // Статическое значение для демонстрации
   const slug = 'chat-example'; // Статическое значение для демонстрации
+  const { user } = useAuth();
+
 
   const filteredChats = POPULAR_CHATS.filter((chat) =>
     chat.title.toLowerCase().includes(search.toLowerCase())
@@ -158,7 +162,10 @@ const ModalChatInterfacePage: React.FC = () => {
         </div>
         <div className="w-full md:w-auto flex items-center justify-end order-1 md:order-2 md:ml-auto">
           <div className="flex items-center gap-2">
-            <AvatarOrSignIn isSignedIn/> {/* Removed isSignedIn prop */}
+                              <AvatarOrSignIn
+        isSignedIn={!!user}
+        avatarUrl={"/ai-logo-placeholder.png"} // Передаем avatarUrl
+      />
           </div>
         </div>
       </header>

@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Импортируем хук useAuth
 
 export default function SignUpPage() {
   const [name, setName] = useState<string>('');
@@ -8,49 +9,66 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { login } = useAuth(); // Получаем функцию login из контекста
 
-const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-  // 1. Собираем данные формы
-  const userData = {
-    name,
-    email,
-    password,
-  };
+    const userData = { name, email, password };
 
-  try {
-    // 2. Отправляем POST-запрос на бэкенд
-    const response = await fetch('http://127.0.0.1:8000/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    });
+    try {
+      // 1. Регистрация
+      const registerResponse = await fetch('http://127.0.0.1:8000/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
 
-    // 3. Обрабатываем ответ
-    if (response.ok) {
-      // Успешная регистрация
-      const data = await response.json();
-      console.log('Registered user:', data);
-      // Например, перенаправить на страницу входа (раскомментируйте, если используете навигацию)
+      if (!registerResponse.ok) {
+        const errorData = await registerResponse.json();
+        setError(errorData.detail || 'Ошибка регистрации');
+        setLoading(false);
+        return;
+      }
+
+      const registeredUser = await registerResponse.json();
+
+      // 2. Автоматический вход после регистрации
+      const loginResponse = await fetch('http://127.0.0.1:8000/auth/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          username: email,
+          password: password,
+        }),
+      });
+
+      if (!loginResponse.ok) {
+        const errorData = await loginResponse.json();
+        setError(errorData.detail || 'Ошибка входа после регистрации');
+        setLoading(false);
+        return;
+      }
+
+      const { access_token, token_type } = await loginResponse.json();
+
+      // 3. Сохраняем токен и данные пользователя в контексте
+      login(access_token, {
+        id: registeredUser.id,
+        name: registeredUser.name,
+        email: registeredUser.email,
+      });
+
+      // 4. Перенаправляем на главную страницу
       navigate('/');
-    } else {
-      // Ошибка при регистрации
-      const errorData = await response.json();
-      setError(errorData.detail || 'Ошибка регистрации');
+    } catch (err) {
+      setError('Произошла непредвиденная ошибка');
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    // Обработка неожиданных ошибок (например, сеть недоступна)
-    setError('Произошла непредвиденная ошибка');
-  } finally {
-    // 4. Выключаем индикатор загрузки
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -60,13 +78,10 @@ const handleSubmit = async (e: FormEvent) => {
         </h2>
 
         {error && (
-          <div className="mb-4 text-red-500 text-center">
-            {error}
-          </div>
+          <div className="mb-4 text-red-500 text-center">{error}</div>
         )}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Name
@@ -80,8 +95,6 @@ const handleSubmit = async (e: FormEvent) => {
               required
             />
           </div>
-
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
@@ -95,8 +108,6 @@ const handleSubmit = async (e: FormEvent) => {
               required
             />
           </div>
-
-          {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -110,8 +121,6 @@ const handleSubmit = async (e: FormEvent) => {
               required
             />
           </div>
-
-          {/* Submit button */}
           <button
             type="submit"
             disabled={loading}
@@ -128,12 +137,10 @@ const handleSubmit = async (e: FormEvent) => {
               'Sign Up'
             )}
           </button>
-
-          {/* Link to sign in */}
           <p className="text-center text-sm text-gray-600 mt-4">
             Already have an account?{' '}
-            <Link to="/" className="text-blue-600 hover:underline">
-              Sign In
+            <Link to="/login" className="text-blue-600 hover:underline">
+              Log In
             </Link>
           </p>
         </form>

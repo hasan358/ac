@@ -18,7 +18,7 @@ const AvatarOrSignIn: React.FC<AvatarOrSignInProps> = ({ isSignedIn, avatarUrl }
       to="/login"
       className="font-semibold whitespace-nowrap px-4 py-2 border border-black rounded-lg"
     >
-       <span className="text-black">Sign In</span>
+       <span className="text-black">Log In</span>
     </Link>
   );
 };

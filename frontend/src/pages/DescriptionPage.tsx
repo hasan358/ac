@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import AvatarOrSignIn from '../components/AvatarOrSignIn';
 import ChatCard from '../components/ChatCard';
+import { useAuth } from '../context/AuthContext';
 import React from 'react';
 
 interface Chat {
@@ -100,6 +101,7 @@ const DescriptionPage: React.FC = () => {
   const { chatId } = useParams<{ chatId?: string }>();
   const chat = chatId ? chatData[chatId] : undefined;
   const [search, setSearch] = React.useState('');
+  const { user } = useAuth();
 
   // Convert chatData to an array for mapping
   const filteredChats: Chat[] = Object.values(chatData);
@@ -129,7 +131,10 @@ const DescriptionPage: React.FC = () => {
         {/* Right part: avatar and home */}
         <div className="w-full md:w-auto flex items-center justify-end order-1 md:order-2 md:ml-auto">
           <div className="flex items-center gap-2">
-            <AvatarOrSignIn isSignedIn/> {/* Removed isSignedIn prop */}
+                  <AvatarOrSignIn
+        isSignedIn={!!user}
+        avatarUrl={"/ai-logo-placeholder.png"} // Передаем avatarUrl
+      />
           </div>
         </div>
       </header>

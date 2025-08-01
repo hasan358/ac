@@ -1,45 +1,61 @@
-import { type FormEvent ,useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+export default function SignInPage() {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    // Prepare form data for OAuth2PasswordRequestForm
-    const formData = new URLSearchParams();
-    formData.append('username', email); // Email is used as username
-    formData.append('password', password);
-
     try {
       const response = await fetch('http://127.0.0.1:8000/auth/token', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formData,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          username: email,
+          password: password,
+        }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        const accessToken = data.access_token;
-        // Store the token in local storage
-        localStorage.setItem('access_token', accessToken);
-        // Redirect to dashboard
-        navigate('/');
-      } else {
-        const data = await response.json();
-        setError(data.detail || 'An error occurred');
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.detail || 'Ошибка входа');
+        setLoading(false);
+        return;
       }
+
+      const { access_token, token_type } = await response.json();
+
+      const userResponse = await fetch('http://127.0.0.1:8000/users/me', {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      if (!userResponse.ok) {
+        setError('Не удалось получить данные пользователя');
+        setLoading(false);
+        return;
+      }
+
+      const userData = await userResponse.json();
+      login(access_token, {
+        id: userData.id,
+        name: userData.name,
+        email: userData.email,
+      });
+
+      navigate('/');
     } catch (err) {
-      setError("Network error");
+      setError('Произошла непредвиденная ошибка');
     } finally {
       setLoading(false);
     }
@@ -53,13 +69,10 @@ export default function Login() {
         </h2>
 
         {error && (
-          <div className="mb-4 text-red-500 text-center">
-            {error}
-          </div>
+          <div className="mb-4 text-red-500 text-center">{error}</div>
         )}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Email
@@ -73,8 +86,6 @@ export default function Login() {
               required
             />
           </div>
-
-          {/* Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Password
@@ -88,8 +99,6 @@ export default function Login() {
               required
             />
           </div>
-
-          {/* Submit button */}
           <button
             type="submit"
             disabled={loading}
@@ -106,8 +115,6 @@ export default function Login() {
               'Log In'
             )}
           </button>
-
-          {/* Link to registration */}
           <p className="text-center text-sm text-gray-600 mt-4">
             Don't have an account?{' '}
             <Link to="/signup" className="text-blue-600 hover:underline">

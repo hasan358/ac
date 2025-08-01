@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import AvatarOrSignIn from '../components/AvatarOrSignIn';
 import ChatCard from '../components/ChatCard';
+import { useAuth } from '../context/AuthContext';
 
 interface ChatData {
   title: string;
@@ -65,6 +66,7 @@ const ChatMenuPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchChats, setSearchChats] = useState('');
   const [searchConversations, setSearchConversations] = useState('');
+  const { user } = useAuth();
 
   const [conversations] = useState<string[]>([]);
 
@@ -86,20 +88,16 @@ const ChatMenuPage: React.FC = () => {
     if (chatId) {
       navigate(`/${chatId}`);
     }
+    else{
+      navigate('/gpt')
+    }
   };
 
   const handleConversationClick = (convName: string) => {
     if (!chatId) return;
 
-    const data = chatData[chatId];
     const slug = convName.replace(/\s+/g, '-').toLowerCase();
-    const interfacePath =
-      data.interfaceType === 'push-button'
-        ? 'pushbutton-interface'
-        : data.interfaceType === 'model'
-        ? 'model-interface'
-        : 'classic-interface';
-    navigate(`/chat/${chatId}/${interfacePath}/${slug}`);
+    navigate(`/${chatId}/${slug}`);
   };
 
   return (
@@ -117,7 +115,10 @@ const ChatMenuPage: React.FC = () => {
         {/* Правая часть: avatar и home */}
         <div className="w-full md:w-auto flex items-center justify-end order-1 md:order-2 md:ml-auto">
           <div className="flex items-center gap-2">
-            <AvatarOrSignIn isSignedIn/>
+                              <AvatarOrSignIn
+        isSignedIn={!!user}
+        avatarUrl={"/ai-logo-placeholder.png"} // Передаем avatarUrl
+      />
           </div>
         </div>
       </header>
