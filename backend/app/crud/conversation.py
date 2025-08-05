@@ -19,7 +19,7 @@ async def create_conversation(db: Session, conv: UserConversationCreate, ai_mode
         logger.info(f"Ответ от AI-сервиса получен: {response}")
 
         # Затем генерируем имя разговора на основе ответа
-        name = await AIService.generate_conv_name(response_content=response, endpoint=ai_url, model=ai_model)
+        name = await AIService.generate_conv_name( response_content=response, endpoint=ai_url, model=ai_model)
         logger.info(f"Имя разговора сгенерировано: {name}")
     except Exception as e:
         logger.error(f"Ошибка при обращении к AI-сервису: {str(e)}")

@@ -3,108 +3,80 @@ import SearchBar from '../components/SearchBar';
 import AvatarOrSignIn from '../components/AvatarOrSignIn';
 import ChatCard from '../components/ChatCard';
 import { useAuth } from '../context/AuthContext';
-import React from 'react';
+import React, { useState } from 'react';
 
-interface Chat {
-  id: string;
+interface ChatData {
   title: string;
+  model: string;
+  id?: string;
   description: string;
   tags: string[];
-  rating: string;
-  comments: string;
-  updated: string;
-  ispaid: boolean;
-  cost: number;
+  updated?: string;
 }
 
-const chatData: Record<string, Chat> = {
-  'gpt': {
+const chatData: Record<string, ChatData> = {
+  gpt: {
     title: 'ChatGPT',
-    description: 'This AI helps you with everyday questions and tasks.',
-    tags: ['Universal ai', 'Assistant', 'English', 'Free', 'Classic chat'],
-    rating: '9.5',
-    comments: '80k',
-    updated: '2 months ago',
-    id: 'gpt',
-    ispaid: false,
-    cost: 0,
+    model: "openai/gpt-4.1",
+    description: "The gpt-4.1 series is the latest iteration of the gpt-4o model family. This iteration of models is specifically targeted for better coding and instruction following, making it better at handling complex technical and coding problems.",
+    tags: ['coding', 'instruction following', 'long-context understanding'],
   },
-  'vison': {
-    title: 'Cloud Vison',
-    description: 'Ask coding questions, get examples and fix bugs in seconds.',
-    tags: ['Devtools', 'New', 'English', 'Free', 'Modal'],
-    rating: '9.0',
-    comments: '60k',
-    updated: '1 week ago',
-    id: 'vison',
-    ispaid: false,
-    cost: 0,
+  grock: {
+    title: 'Grok 3',
+    model: "xai/grok-3",
+    description: "Grok 3 is xAI's debut non-reasoning model, pre-trained by the Colossus datacenter at supermassive scale to excel in enterprise domains like finance, healthcare, and legal. It has exceptional instruction following capabilities and is purpose-built for common business use cases like data extraction, coding, and text summarization.",
+    tags: ['specialized domains', 'coding', 'problem-soloving'],
   },
-  'hug-face': {
-    title: 'Hugging Face',
-    description: 'AI-powered travel assistant to help you plan trips and explore the world.',
-    tags: ['Travel', 'Assistant', 'English', 'Free', 'Push-button'],
-    rating: '8.8',
-    comments: '15k',
-    updated: '5 days ago',
-    id: 'hug-face',
-    ispaid: false,
-    cost: 0,
+  mistral: {
+    title: 'Mistral Medium 3',
+    model: "mistral-ai/mistral-medium-2505",
+    description: 'Mistral Medium 3 is a SOTA & versatile model designed for a wide range of tasks, including programming, mathematical reasoning, understanding long documents, summarization, and dialogue./nIt boasts multi-modal capabilities, enabling it to process visual inputs, and supports dozens of languages, including over 80 coding languages. Additionally, it features function calling and agentic workflows.',
+    tags: ['state-of-the-art', 'reasoning', 'knowledge', 'coding', 'vision capabilities'],
   },
-  'replicate': {
-    title: 'Replicate',
-    description: 'This AI helps you with everyday questions and tasks.',
-    tags: ['Universal ai', 'Assistant', 'English', 'Free', 'Classic chat'],
-    rating: '9.5',
-    comments: '80k',
-    updated: '2 months ago',
-    id: 'replicate',
-    ispaid: false,
-    cost: 0,
+  deepseek: {
+    title: 'DeepSeek',
+    model: "deepseek/DeepSeek-R1-0528",
+    description: 'The DeepSeek R1 model has undergone a minor version upgrade, with the current version being DeepSeek-R1-0528. In the latest update, DeepSeek R1 has significantly improved its depth of reasoning and inference capabilities by leveraging increased computational resources and introducing algorithmic optimization mechanisms during post-training. The model has demonstrated outstanding performance across various benchmark evaluations, including mathematics, programming, and general logic. Its overall performance is now approaching that of leading models, such as O3 and Gemini 2.5 Pro.',
+    tags: ['reasoning capabilities', 'reduced hallucination rate', 'enhanced support for function calling', 'vibe coding'],
   },
-  'stability-ai': {
-    title: 'Stability AI',
-    description: 'Ask coding questions, get examples and fix bugs in seconds.',
-    tags: ['Devtools', 'New', 'English', 'Free', 'Modal'],
-    rating: '9.0',
-    comments: '60k',
-    updated: '1 week ago',
-    id: 'stability-ai',
-    ispaid: false,
-    cost: 0,
+  llama: {
+    title: 'Llama',
+    model: "meta/Llama-4-Scout-17B-16E-Instruct",
+    description: 'The Llama 4 collection of models are natively multimodal AI models that enable text and multimodal experiences. These models leverage a mixture-of-experts architecture to offer industry-leading performance in text and image understanding.',
+    tags: ['reasoning', 'assistant', 'multi-modal'],
   },
-  'ex': {
-    title: 'Example',
-    description: 'AI-powered travel assistant to help you plan trips and explore the world.',
-    tags: ['Travel', 'Assistant', 'English', 'Free', 'Push-button'],
-    rating: '8.8',
-    comments: '15k',
-    updated: '5 days ago',
-    id: 'ex',
-    ispaid: false,
-    cost: 0,
+  cohere: {
+    title: 'Cohere Command',
+    model: "cohere/cohere-command-a",
+    description: "Command A is Cohere's flagship generative model, optimized for companies that require fast, secure, and highly-performant AI solutions. Command A delivers maximum performance with minimal hardware costs when compared to leading proprietary and open-weights models, such as GPT-4o and DeepSeek-V3. For private deployments, Command A excels on business-critical agentic and multilingual tasks, and can be deployed on just 2 GPUs, compared to competitive models that typically require as many as 32 GPUs.",
+    tags: ['efficient generative model', 'agentic', 'multilingual'],
   },
-  'paid-ex': {
-    title: 'Paid Example',
-    description: 'AI-powered travel assistant to help you plan trips and explore the world.',
-    tags: ['Travel', 'Assistant', 'English', 'Free', 'Push-button'],
-    rating: '8.8',
-    comments: '15k',
-    updated: '5 days ago',
-    id: 'paid-ex',
-    ispaid: true,
-    cost: 9.99,
+  microsoft: {
+    title: 'Microsoft',
+    model: "microsoft/Phi-4-mini-reasoning",
+    description: 'Phi-4-Reasoning is a state-of-the-art open-weight reasoning model finetuned from Phi-4 using supervised fine-tuning on a dataset of chain-of-thought traces and reinforcement learning. The supervised fine-tuning dataset includes a blend of synthetic prompts and high-quality filtered data from public domain websites, focused on math, science, and coding skills as well as alignment data for safety and Responsible AI. The goal of this approach was to ensure that small capable models were trained with data focused on high quality and advanced reasoning.',
+    tags: ['State-of-the-art', 'open-weight', 'reasoning model'],
   },
 };
+
+const POPULAR_CHATS = Object.keys(chatData).map((id) => ({
+  id,
+  title: chatData[id].title,
+  description: chatData[id].description || '',
+  logoUrl: '/ai-logo-placeholder.png',
+}));
 
 const DescriptionPage: React.FC = () => {
   const { chatId } = useParams<{ chatId?: string }>();
   const chat = chatId ? chatData[chatId] : undefined;
+  const [searchChats] = useState('');
   const [search, setSearch] = React.useState('');
   const { user } = useAuth();
 
   // Convert chatData to an array for mapping
-  const filteredChats: Chat[] = Object.values(chatData);
+  const filteredChats = POPULAR_CHATS.filter((chat) =>
+    chat.title.toLowerCase().includes(searchChats.toLowerCase())
+  );
 
   if (!chat) {
     return (
@@ -116,9 +88,9 @@ const DescriptionPage: React.FC = () => {
   }
 
   return (
-    <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0 overflow-auto">
+    <div className="h-screen w-full max-w-none bg-gray-50 flex flex-col gap-0">
       {/* Topbar */}
-      <header className="flex flex-col md:flex-row items-start md:items-center px-4 py-2 gap-15 md:gap-0 w-full">
+      <header className="flex flex-col md:flex-row items-start md:items-center px-4 py-2 gap-4 md:gap-0 w-full">
         {/* Left part: search + filter */}
         <div className="w-full md:w-[440px] flex items-center gap-2 order-2 md:order-1">
           <SearchBar
@@ -131,10 +103,10 @@ const DescriptionPage: React.FC = () => {
         {/* Right part: avatar and home */}
         <div className="w-full md:w-auto flex items-center justify-end order-1 md:order-2 md:ml-auto">
           <div className="flex items-center gap-2">
-                  <AvatarOrSignIn
-        isSignedIn={!!user}
-        avatarUrl={"/ai-logo-placeholder.png"} // Передаем avatarUrl
-      />
+            <AvatarOrSignIn
+              isSignedIn={!!user}
+              avatarUrl="/ai-logo-placeholder.png"
+            />
           </div>
         </div>
       </header>
@@ -142,11 +114,10 @@ const DescriptionPage: React.FC = () => {
       <hr className="border border-gray-300 w-full" />
 
       {/* Main section */}
-      <section className="relative flex-1 flex">
-        <div className='hidden sm:block'>
-          <div className="absolute left-[0px] top-0 bottom-0 w-px bg-gray-300 z-0 xl:left-[455px] lg:left-[370px] md:left-[300px]" />
+      <section className="flex-1 flex min-h-0">
+        <div className="hidden sm:block w-[445px] h-full bg-white border-r border-gray-200 overflow-y-auto overflow-x-hidden">
           <div className="flex flex-col gap-0">
-            {filteredChats.map((chat: Chat, idx: number) => (
+            {filteredChats.map((chat, idx) => (
               <React.Fragment key={chat.id}>
                 {idx > 0 && <hr className="border-t border-gray-300 w-full" />}
                 <Link to={`/${chat.id}/menu`}>

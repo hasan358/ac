@@ -14,11 +14,12 @@ class AIService:
     )
        response = client.complete(
         messages=[
-            SystemMessage("You are a helpful assistant."),
+            SystemMessage("You are a helpful assistant, so you should give good structured and esay to understand response."),
             UserMessage(prompt),
         ],
-        temperature=1.0,
-        top_p=1.0,
+        temperature=0.7,
+        top_p=0.9,
+        max_tokens=2000,
         model=model
     )
        return response.choices[0].message.content
@@ -31,7 +32,7 @@ class AIService:
     )
        response = client.complete(
         messages=[
-            SystemMessage("Give a five to three words summary."),
+            SystemMessage("Give just a five to three words name to this text."),
             UserMessage(response_content),
         ],
         temperature=1.0,
