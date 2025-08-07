@@ -37,6 +37,7 @@ class AIService:
         ],
         temperature=1.0,
         top_p=1.0,
+        max_tokens=50,
         model=model
      )
        return response.choices[0].message.content

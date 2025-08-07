@@ -1,24 +1,19 @@
-# app/schemas/conversation.py
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
-from app.models.conversation import ChatType
 
 class UserConversationBase(BaseModel):
-    question: str
+    question: Optional[str] = None  # Made optional to align with ChatCreate
 
 class UserConversationCreate(UserConversationBase):
-    user_id: Optional[int] = None  # Устанавливается в эндпоинте
-    chat_id: Optional[int] = None  # Для поддержки клиентских запросов
-    chat_type: Optional[ChatType] = None  # Указывает, является ли чат кастомным
-
+    chat_id: int
 
 class UserConversationOut(UserConversationBase):
+    id: Optional[int] = None
     name: str
-    id: int
-    user_id: int
     response: Optional[str] = None
-    created_at: datetime
+    created_at: Optional[datetime] = None
+    chat_id: int
 
     class Config:
-        from_attributes = True  # Для Pydantic v2
+        from_attributes = True

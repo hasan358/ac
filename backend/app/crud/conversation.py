@@ -1,48 +1,66 @@
-# app/crud/conversation.py
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.models.conversation import UserConversation
-from app.models.chat import CustomChat, PublicChat
 from app.schemas.conversation import UserConversationCreate, UserConversationOut
 from app.services.ai_service import AIService
 import logging
+import time
 
 logger = logging.getLogger(__name__)
 
 async def create_conversation(db: Session, conv: UserConversationCreate, ai_model: str) -> UserConversationOut:
-    logger.info(f"Создание разговора с данными: {conv.dict()}")
+    """
+    Создание новой записи беседы с использованием AI-сервиса.
+    
+    Args:
+        db: Сессия базы данных SQLAlchemy.
+        conv: Данные для создания беседы (вопрос и chat_id).
+        ai_model: Модель AI для генерации ответа и имени.
+    
+    Returns:
+        UserConversationOut: Созданная беседа в формате Pydantic.
+    
+    Raises:
+        HTTPException: Если AI-сервис недоступен или произошла ошибка базы данных.
+    """
+    start_time = time.time()
+    logger.info(f"Начало создания беседы: {conv.dict()}")
 
-    ai_url = "https://models.github.ai/inference"
-    try:
-        # Сначала получаем ответ от AI-сервиса
-        response = await AIService.generate_response(prompt=conv.question, endpoint=ai_url, model=ai_model)
-        logger.info(f"Ответ от AI-сервиса получен: {response}")
+    # Проверка, что вопрос предоставлен, если требуется ответ от AI
+    if not conv.question:
+        logger.warning("Вопрос не предоставлен, создается беседа без ответа AI")
+        name = "Безымянная беседа"
+        response = None
+    else:
+        ai_url = "https://models.github.ai/inference"  # Рекомендуется вынести в конфигурацию
+        try:
+            response_start = time.time()
+            response = await AIService.generate_response(prompt=conv.question, endpoint=ai_url, model=ai_model)
+            logger.info(f"Ответ AI получен за {time.time() - response_start:.2f} секунд: {response}")
 
-        # Затем генерируем имя разговора на основе ответа
-        name = await AIService.generate_conv_name( response_content=response, endpoint=ai_url, model=ai_model)
-        logger.info(f"Имя разговора сгенерировано: {name}")
-    except Exception as e:
-        logger.error(f"Ошибка при обращении к AI-сервису: {str(e)}")
-        raise HTTPException(status_code=503, detail="AI-сервис недоступен")
+            name_start = time.time()
+            name = await AIService.generate_conv_name(response_content=response, endpoint=ai_url, model=ai_model)
+            logger.info(f"Имя беседы сгенерировано за {time.time() - name_start:.2f} секунд: {name}")
+        except Exception as e:
+            logger.error(f"Ошибка AI-сервиса: {str(e)}")
+            raise HTTPException(status_code=503, detail="AI-сервис недоступен")
 
     try:
         db_conv = UserConversation(
-            user_id=conv.user_id,
-            chat_id=conv.chat_id,
-            chat_type=conv.chat_type,
             name=name,
             question=conv.question,
-            response=response
+            response=response,
+            chat_id=conv.chat_id
         )
         db.add(db_conv)
         db.commit()
         db.refresh(db_conv)
-        logger.info(f"Разговор создан с id: {db_conv.id}")
+        logger.info(f"Беседа создана за {time.time() - start_time:.2f} секунд, id: {db_conv.id}")
         return UserConversationOut.from_orm(db_conv)
     except Exception as e:
         db.rollback()
-        logger.error(f"Ошибка при создании разговора: {str(e)}")
-        raise HTTPException(status_code=400, detail=f"Не удалось создать разговор: {str(e)}")
+        logger.error(f"Ошибка при создании беседы: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Не удалось создать беседу: {str(e)}")
 
 def get_conversation(db: Session, conv_id: int) -> UserConversation | None:
     return db.query(UserConversation).filter(UserConversation.id == conv_id).first()

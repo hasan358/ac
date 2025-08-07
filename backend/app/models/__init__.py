@@ -1,3 +1,3 @@
 from .user import User
-from .chat import PublicChat, CustomChat
+from .chat import Chat
 from .conversation import UserConversation

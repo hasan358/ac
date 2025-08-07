@@ -16,10 +16,6 @@ async def send_message(conv: UserConversationCreate, model:str, db: Session = De
     logger.info(f"Получен POST-запрос на /conversations/ с данными: {conv.dict()} от пользователя user_id={user.id}")
     
     # Проверка прав доступа
-    if conv.user_id and conv.user_id != user.id:
-        raise HTTPException(status_code=403, detail="Нельзя указать user_id другого пользователя")
-    
-    conv.user_id = user.id
     return await create_conversation(db, conv, ai_model=model)
 
 @router.get("/", response_model=list[UserConversationOut])

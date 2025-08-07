@@ -1,47 +1,25 @@
 from pydantic import BaseModel
-from typing import Optional
-from enum import Enum
-from datetime import datetime
+from typing import Optional, List
+from app.schemas.conversation import UserConversationOut
 
-
-class MonetizationType(str, Enum):
-    free = "Free"
-    paid = "Paid"
-    subscription = "Adds"
-
-
-# 🔹 Общие базовые поля
 class ChatBase(BaseModel):
     title: str
-    description: Optional[str] = None
-    foundation: Optional[str] = None
-    interface: Optional[str] = None
-    monetization_type: Optional[MonetizationType] = None
-    cost: Optional[float] = None
-
-
-# 🔹 Public Chat
-class PublicChatCreate(ChatBase):
-    pass
-class PublicChatOut(ChatBase):
-    id: int
     creator_id: int
-    created_at: datetime
+    ai_id: int
 
-    class Config:
-        from_attributes = True
+class ChatCreate(ChatBase):
+    question: Optional[str] = None
 
+class ChatUpdate(BaseModel):
+    title: Optional[str] = None
+    creator_id: Optional[int] = None
+    ai_id: Optional[int] = None
+    question: Optional[str] = None
 
-# 🔹 Custom Chat
-class CustomChatCreate(ChatBase):
-    creator_id: int
-
-class CustomChatOut(ChatBase):
+class Chat(ChatBase):
     id: int
-    creator_id: int=1
-    is_public: bool = False
-    validation_period: Optional[datetime]
-    created_at: datetime
+    question: Optional[str] = None
+    conversations: List[UserConversationOut] = []
 
     class Config:
         from_attributes = True

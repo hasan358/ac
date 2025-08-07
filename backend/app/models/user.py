@@ -14,5 +14,4 @@ class User(Base):
     role = Column(String, default="user")
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    custom_chats = relationship("CustomChat", back_populates="creator", cascade="all, delete")
-    conversations = relationship("UserConversation", back_populates="user", cascade="all, delete")
+    chats = relationship("Chat", back_populates="creator", cascade="all, delete")
